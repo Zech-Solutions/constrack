@@ -24,14 +24,17 @@
 
 <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex flex-col min-h-screen" class="is-preload">
     <header id="header">
-        <h1>Eventually</h1>
-        <p>A simple template for telling the world when you'll launch<br />
-            your next big thing. Brought to you by <a href="http://html5up.net">HTML5 UP</a>.</p>
+        <h1>Constrack</h1>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque,
+            animi, architecto fugiat sit autem sed deleniti repellat voluptate
+            necessitatibus porro laudantium! Quaerat assumenda architecto unde
+            facere. Reprehenderit sapiente doloremque cupiditate!<br />
+        <p>
     </header>
-    <form id="signup-form" method="post" action="#">
+    {{-- <form id="signup-form" method="post" action="#">
         <input type="email" name="email" id="email" placeholder="Email Address" />
         <input type="submit" value="Sign Up" />
-    </form>
+    </form> --}}
     <footer id="footer">
         <ul class="icons">
             <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
@@ -40,13 +43,10 @@
             <li><a href="#" class="icon fa-envelope"><span class="label">Email</span></a></li>
         </ul>
         <ul class="copyright">
-            <li>&copy; Untitled.</li>
-            <li>Credits: <a href="http://html5up.net">HTML5 UP</a></li>
+            <li>&copy; Constrack. All right reserve | 2025</li>
         </ul>
     </footer>
-    <script src="{{ asset('assets/js/main.js') }}" >
-
-
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

@@ -22,7 +22,12 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    protected static ?string $navigationParentItem = 'Products';
+
+    protected static ?string $navigationGroup = 'Master Data';
+
 
     public static function form(Form $form): Form
     {
@@ -37,7 +42,7 @@ class CategoryResource extends Resource
                     ->label('Name')
                     ->required(),
                 TextInput::make('slug')
-                    ->label('Slug')
+                    ->label('Slugs')
                     ->required(),
                 Textarea::make('description')
                     ->label('Description')
@@ -75,7 +80,6 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

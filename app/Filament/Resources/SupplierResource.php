@@ -22,32 +22,33 @@ class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationGroup = 'Master Data';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-            TextInput::make('name')
-                ->required()
-                ->prefixIcon('heroicon-o-user')
-                ->maxLength(255),
-            TextInput::make('email')
-                ->email()
-                ->required()
-                ->prefixIcon('tabler-mail')
-                ->maxLength(255),
-            TextInput::make('phone')
-                ->required()
-                ->prefixIcon('tabler-phone')
-                ->maxLength(255),
-            TextInput::make('address')
-                ->required()
-                ->prefixIcon('tabler-location')
-                ->maxLength(255),
-            Select::make('category')
-                ->required()
-                ->options(fn () => \App\Models\Category::where('is_active', true)->pluck('name', 'id')->toArray()),
+                TextInput::make('name')
+                    ->required()
+                    ->prefixIcon('heroicon-o-user')
+                    ->maxLength(255),
+                TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->prefixIcon('tabler-mail')
+                    ->maxLength(255),
+                TextInput::make('phone')
+                    ->required()
+                    ->prefixIcon('tabler-phone')
+                    ->maxLength(255),
+                TextInput::make('address')
+                    ->required()
+                    ->prefixIcon('tabler-location')
+                    ->maxLength(255),
+                Select::make('category')
+                    ->required()
+                    ->options(fn() => \App\Models\Category::where('is_active', true)->pluck('name', 'id')->toArray()),
             ]);
     }
 

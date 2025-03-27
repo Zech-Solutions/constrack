@@ -24,7 +24,7 @@ class ProductFactory extends Factory
             'sku' => fake()->unique()->isbn10(),
             'category_id' => fake()->numberBetween(1, 10),
             'supplier_id' => fake()->numberBetween(1, 10),
-            'image' => fake()->imageUrl(),
+            'image' => 'https://picsum.photos/300/200?random=' . $this->faker->unique()->numberBetween(1, 1000),
             'is_active' => fake()->boolean(),
         ];
     }
