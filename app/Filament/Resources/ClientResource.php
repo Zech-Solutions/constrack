@@ -39,16 +39,19 @@ class ClientResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-user'),
 
                         TextInput::make('email')
                             ->email()
                             ->unique(table: 'clients', column: 'email', ignoreRecord: true)
+                            ->prefixIcon('heroicon-o-envelope')
                             ->maxLength(255),
 
                         TextInput::make('phone')
                             ->tel()
-                            ->maxLength(20),
+                            ->maxLength(20)
+                            ->prefixIcon('heroicon-o-phone'),
 
                         Select::make('type')
                             ->options([
@@ -56,6 +59,7 @@ class ClientResource extends Resource
                                 'business' => 'Business',
                             ])
                             ->required()
+                            ->prefixIcon('heroicon-o-tag')
                             ->live(),
                     ]),
 
@@ -66,23 +70,34 @@ class ClientResource extends Resource
                     ->schema([
                         TextInput::make('company')
                             ->requiredWith('type')
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-building-office'),
 
                         TextInput::make('website')
                             ->url()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-globe-alt'),
                     ]),
 
                 // Address Section
                 Section::make('Address Information')
                     ->columns(2)
                     ->schema([
-                        Textarea::make('address')
-                            ->columnSpanFull(),
-                        TextInput::make('city'),
-                        TextInput::make('state'),
-                        TextInput::make('postal_code'),
-                        TextInput::make('country'),
+                        TextInput::make('address')
+                            ->columnSpanFull()
+                            ->prefixIcon('heroicon-o-map-pin'),
+
+                        TextInput::make('city')
+                            ->prefixIcon('heroicon-o-building-library'),
+
+                        TextInput::make('state')
+                            ->prefixIcon('heroicon-o-map'),
+
+                        TextInput::make('postal_code')
+                            ->prefixIcon('heroicon-o-document-text'),
+
+                        TextInput::make('country')
+                            ->prefixIcon('heroicon-o-flag'),
                     ]),
 
                 // Financial Section
@@ -90,7 +105,8 @@ class ClientResource extends Resource
                     ->schema([
                         TextInput::make('credit_limit')
                             ->numeric()
-                            ->prefix('₱'),
+                            ->prefix('₱')
+                            ->prefixIcon('heroicon-o-currency-dollar'),
 
                         Select::make('payment_terms')
                             ->options([
@@ -98,7 +114,8 @@ class ClientResource extends Resource
                                 'net_30' => 'Net 30 Days',
                                 'cod' => 'Cash on Delivery',
                             ])
-                            ->default('net_30'),
+                            ->default('net_30')
+                            ->prefixIcon('heroicon-o-clock'),
                     ])
                     ->columns(2),
 
