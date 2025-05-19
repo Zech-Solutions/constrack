@@ -26,9 +26,9 @@ use Illuminate\Support\Facades\Hash;
 
 class ClientResource extends Resource
 {
-    protected static ?string $model = Client::class;
+    protected static ?string $navigationGroup = 'Master Data';
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $model = Client::class;
 
     public static function form(Form $form): Form
     {
@@ -73,8 +73,7 @@ class ClientResource extends Resource
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-building-office'),
 
-                        TextInput::make('website')
-                            ->url()
+                        TextInput::make('tin')
                             ->maxLength(255)
                             ->prefixIcon('heroicon-o-globe-alt'),
                     ]),
@@ -144,13 +143,10 @@ class ClientResource extends Resource
 
                 TextColumn::make('email')
                     ->searchable()
-                    ->sortable()
-                    ->icon('heroicon-o-envelope')
-                    ->iconPosition('after'),
+                    ->sortable(),
 
                 TextColumn::make('phone')
                     ->searchable()
-                    ->icon('heroicon-o-phone')
                     ->copyable(),
 
                 BadgeColumn::make('type')
@@ -162,13 +158,15 @@ class ClientResource extends Resource
                     ->icons([
                         'heroicon-o-user' => 'individual',
                         'heroicon-o-building-office' => 'business',
-                    ]),
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('credit_limit')
                     ->label('Credit')
                     ->money('PHP')
                     ->alignEnd()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 BadgeColumn::make('payment_terms')
                     ->label('Terms')
@@ -176,7 +174,8 @@ class ClientResource extends Resource
                         'warning' => 'net_15',
                         'success' => 'net_30',
                         'danger' => 'cod',
-                    ]),
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('is_active')
                     ->label('Active')
@@ -187,7 +186,8 @@ class ClientResource extends Resource
                 TextColumn::make('created_at')
                     ->label('Since')
                     ->dateTime('M d, Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('type')

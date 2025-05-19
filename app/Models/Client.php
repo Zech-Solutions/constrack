@@ -17,10 +17,12 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
+        'tenant_id',
         'name',
         'email',
         'phone',
         'company',
+        'tin',
         'type',
         'address',
         'city',
@@ -62,6 +64,14 @@ class Client extends Model
         'individual' => 'Individual',
         'business' => 'Business',
     ];
+
+    /**
+     * Get the associated tenant account
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
 
     /**
      * Get the associated user account

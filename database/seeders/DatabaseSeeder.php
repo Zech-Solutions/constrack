@@ -14,10 +14,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $this->call(UserSeeder::class);
-        $this->call(SupplierSeeder::class);
+        // $this->call(UserSeeder::class);
+        // $this->call(SupplierSeeder::class);
+        // $this->call(CategorySeeder::class);
+
         $this->call(ProductSeeder::class);
-        $this->call(CategorySeeder::class);
         $this->call(ClientSeeder::class);
+        $this->call(TenantSeeder::class);
+        $this->call(PreliminariesSeeder::class);
     }
 }

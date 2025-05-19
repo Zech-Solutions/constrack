@@ -6,9 +6,13 @@ use App\Filament\Resources\SupplierResource\Pages;
 use App\Filament\Resources\SupplierResource\RelationManagers;
 use App\Models\Supplier;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -21,34 +25,56 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SupplierResource extends Resource
 {
     protected static ?string $model = Supplier::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?string $navigationGroup = 'Master Data';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->prefixIcon('heroicon-o-user')
-                    ->maxLength(255),
-                TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->prefixIcon('tabler-mail')
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->required()
-                    ->prefixIcon('tabler-phone')
-                    ->maxLength(255),
-                TextInput::make('address')
-                    ->required()
-                    ->prefixIcon('tabler-location')
-                    ->maxLength(255),
-                Select::make('category')
-                    ->required()
-                    ->options(fn() => \App\Models\Category::where('is_active', true)->pluck('name', 'id')->toArray()),
+                Section::make('Basic Information')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
+                            ->prefixIcon('heroicon-o-user'),
+
+                        TextInput::make('email')
+                            ->email()
+                            ->unique(table: 'clients', column: 'email', ignoreRecord: true)
+                            ->prefixIcon('heroicon-o-envelope')
+                            ->maxLength(255),
+
+                        TextInput::make('phone')
+                            ->tel()
+                            ->maxLength(20)
+                            ->prefixIcon('heroicon-o-phone'),
+
+                        TextInput::make('tin')
+                            ->maxLength(20)
+                            ->prefixIcon('heroicon-o-phone'),
+                    ]),
+
+                // Address Section
+                Section::make('Address Information')
+                    ->columns(2)
+                    ->schema([
+                    TextInput::make('address')
+                            ->columnSpanFull()
+                            ->prefixIcon('heroicon-o-map-pin'),
+
+                        TextInput::make('city')
+                            ->prefixIcon('heroicon-o-building-library'),
+
+                        TextInput::make('state')
+                            ->prefixIcon('heroicon-o-map'),
+
+                        TextInput::make('postal_code')
+                            ->prefixIcon('heroicon-o-document-text'),
+
+                        TextInput::make('country')
+                            ->prefixIcon('heroicon-o-flag'),
+                    ]),
             ]);
     }
 

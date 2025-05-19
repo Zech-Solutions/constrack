@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Clusters\Products;
+use App\Filament\Clusters\ProductCluster;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
 use Filament\Forms\Components\FileUpload;
@@ -20,14 +20,16 @@ use Filament\Tables\Table;
 
 class ProductResource extends Resource
 {
+    protected static ?string $cluster = ProductCluster::class;
+
     protected static ?string $model = Product::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-
-    protected static ?string $navigationGroup = 'Master Data';
 
     protected static ?string $modelLabel = 'Products';
 
+    public static function getNavigationLabel(): string
+    {
+        return "Product Entry";    
+    }
 
     // protected static ?string $cluster = Products::class;
     public static function form(Form $form): Form
@@ -35,75 +37,34 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 Section::make('Basic Information')
-                    ->columns(1)
+                    ->columns(2)
                     ->schema([
                         TextInput::make('name')
                             ->label('Product Name')
                             ->required()
                             ->maxLength(255),
-
+                        Select::make('product_category_id')
+                            ->label('Category')
+                            ->relationship('category', 'name')
+                            ->required()
+                            ->preload()
+                            ->searchable(),
+                        TextInput::make('code')
+                            ->label('Product Code')
+                            ->unique()
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('unit')
+                            ->label('Product Unit')
+                            ->helperText("kg, g, m")
+                            ->required()
+                            ->maxLength(255),
                         Textarea::make('description')
                             ->label('Description')
                             ->nullable()
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Pricing & Inventory')
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('price')
-                            ->label('Price (₱)')
-                            ->prefix('₱')
-                            ->numeric()
-                            ->required()
-                            ->rules(['numeric', 'min:0'])
-                            ->maxValue(99999999.99),
-
-                        TextInput::make('stock')
-                            ->label('Stock Quantity')
-                            ->numeric()
-                            ->required()
-                            ->rules(['integer', 'min:0']),
-
-                        TextInput::make('sku')
-                            ->label('SKU')
-                            ->unique('products', 'sku', ignoreRecord: true)
-                            ->required()
-                            ->maxLength(50)
-                            ->columnSpanFull(),
-                    ]),
-
-                Section::make('Relationships')
-                    ->columns(2)
-                    ->schema([
-                        Select::make('category_id')
-                            ->label('Category')
-                            ->relationship('category', 'name')
-                            ->required()
-                            ->preload()
-                            ->searchable(),
-
-                        Select::make('supplier_id')
-                            ->label('Supplier')
-                            ->relationship('supplier', 'name')
-                            ->required()
-                            ->preload()
-                            ->searchable(),
-                    ]),
-
-                Section::make('Media & Status')
-                    ->columns(2)
-                    ->schema([
-                        FileUpload::make('image')
-                            ->label('Product Image')
-                            ->image()
-                            ->directory('products')
-                            ->nullable(),
-
-                        Toggle::make('is_active')
-                            ->label('Active?')
-                            ->inline(false),
-                    ]),
             ]);
     }
 
@@ -111,34 +72,17 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image')
-                    ->label('Image')
-                    ->circular()
-                    ->width(50)
-                    ->height(50)
-                    ->disk('public'),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable()
                     ->label('Name'),
-                TextColumn::make('price')
-                    ->label('Price')
-                    ->money('PHP')
+                TextColumn::make('code')
+                    ->label('Code')
                     ->sortable(),
-                TextColumn::make('stock')
-                    ->sortable()
-                    ->searchable()
-                    ->label('Stock'),
                 TextColumn::make('category.name')
                     ->label('Category')
                     ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('is_active')
-                    ->label('Status')
-                    ->badge()
-                    ->color(fn(bool $state): string => $state ? 'success' : 'danger')
-                    ->formatStateUsing(fn(bool $state): string => $state ? 'Active' : 'Inactive'),
+                    ->searchable()
             ])
             ->filters([
                 //

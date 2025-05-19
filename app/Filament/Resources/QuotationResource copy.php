@@ -1,0 +1,203 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Enums\QuotationItemType;
+use App\Enums\WorkType;
+use App\Filament\Resources\QuotationResource\Pages;
+use App\Filament\Resources\QuotationResource\RelationManagers;
+use App\Models\Quotation;
+use App\Models\Section as ModelsSection;
+use App\Models\SubSection;
+use App\Models\Work;
+use App\Models\WorkCategory;
+use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
+
+
+class QuotationResource extends Resource
+{
+    protected static ?string $model = Quotation::class;
+
+    protected static ?string $navigationGroup = 'Projects Management';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make("Quotation Information")
+                    ->columns(4)
+                    ->schema([
+                        Select::make('client_id')
+                            ->label('Clients')
+                            ->relationship('client', 'name')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->columnSpanFull(),
+                        Forms\Components\DatePicker::make('quotation_date')
+                            ->required(),
+                        Forms\Components\TextInput::make('term')
+                            ->required()
+                            ->numeric()
+                            ->default(30),
+                        Forms\Components\TextInput::make('vat_percent')
+                            ->required()
+                            ->numeric()
+                            ->default(12),
+                        Forms\Components\TextInput::make('profit_percent')
+                            ->required()
+                            ->numeric()
+                            ->default(35),
+                        Forms\Components\TextInput::make('title')
+                            ->required()
+                            ->maxLength(255)
+                            ->autocomplete('off')
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('description')
+                            ->autocomplete('off')
+                            ->maxLength(255)
+                            ->default(null)
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make("Preliminaries")
+                    ->schema([
+                        Repeater::make('preliminaries')
+                            ->schema([
+                                Select::make('work_id')
+                                    ->label("Scope")
+                                    ->searchable()
+                                    ->options(fn() => Work::optionsForSelect(WorkType::PRELIMINARIES))
+                                    ->live()
+                                    ->required()
+                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+
+                                Select::make('work_category_id')
+                                    ->label("Sub Category")
+                                    ->searchable()
+                                    ->required()
+                                    ->options(function (Get $get) {
+                                        $work_id = $get('work_id');
+                                        return WorkCategory::optionsForSelect($work_id);
+                                    })
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                                TextInput::make('total')
+                                    ->label("Amount")
+                                    ->required()
+                                    ->numeric(),
+                            ])
+                            ->columns(3)
+                            ->default(function () {
+                                return WorkCategory::where('is_default', true)
+                                    ->get()
+                                    ->map(function ($category) {
+                                        return [
+                                            'work_id' => $category->work_id,
+                                            'work_category_id' => $category->id,
+                                            'total' => $category->amount,
+                                        ];
+                                    })
+                                    ->toArray();
+                            })
+                    ])
+                    ->collapsible(),
+                Section::make("Scope of Works")
+                    ->schema([
+                        Repeater::make('works')
+                            ->label("Main Works")
+                            ->schema([
+                                Select::make('work_id')
+                                    ->label("Scope")
+                                    ->searchable()
+                                    ->options(fn() => Work::optionsForSelect(WorkType::MAIN_SCOPE))
+                                    ->live()
+                                    ->required()
+                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+
+                                Select::make('work_category_id')
+                                    ->label("Sub Category")
+                                    ->searchable()
+                                    ->required()
+                                    ->options(function (Get $get) {
+                                        $work_id = $get('work_id');
+                                        return WorkCategory::optionsForSelect($work_id);
+                                    })
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                            ])
+                            ->columns(2)
+                    ])
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('client.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('quotation_date')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('code')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('term')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListQuotations::route('/'),
+            'create' => Pages\CreateQuotation::route('/create'),
+            'edit' => Pages\EditQuotation::route('/{record}/edit'),
+        ];
+    }
+}

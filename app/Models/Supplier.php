@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Supplier extends Model
 {
@@ -13,8 +14,12 @@ class Supplier extends Model
         'name',
         'email',
         'phone',
+        'tin',
         'address',
-        'category',
+        'city',
+        'state',
+        'postal_code',
+        'country',
     ];
     public function products()
     {
@@ -23,6 +28,14 @@ class Supplier extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the associated tenant account
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
 }

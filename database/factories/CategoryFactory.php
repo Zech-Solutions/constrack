@@ -17,10 +17,10 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
+            'tenant_id' => 1,
             'name' => fake()->name(),
             'slug' => fake()->slug(),
             'description'=> fake()->text(30),
-            'is_active' => fake()->boolean(),
         ];
     }
 }

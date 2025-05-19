@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id');
 
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
             $table->string('company')->nullable();
-            $table->enum('type', ['individual', 'business'])->default('individual');
+            $table->string('tin')->nullable();
+            $table->enum('type', ['individual', 'corporate'])->default('individual');
 
             $table->text('address')->nullable();
             $table->string('city')->nullable();
@@ -27,10 +29,10 @@ return new class extends Migration
             $table->string('country')->nullable();
 
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-            $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('set null');
 
             $table->decimal('credit_limit', 10, 2)->nullable();
-            $table->enum('payment_terms', ['net_15', 'net_30', 'cod'])->default('net_30');
+            $table->enum('payment_type', ['CASH', 'CHARGE'])->default('CASH');
+            $table->integer('payment_term')->default(30);
 
             $table->text('notes')->nullable();
             $table->boolean('is_active')->default(true);

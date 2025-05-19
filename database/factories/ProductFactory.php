@@ -17,15 +17,12 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
+            'tenant_id' => 1,
+            'category_id' => 1,
             'name' => fake()->name(),
-            'price' => fake()->randomFloat(2, 10, 500),
+            'code' => fake()->text(),
             'description' => fake()->text(),
-            'stock' => fake()->numberBetween(1, 100),
-            'sku' => fake()->unique()->isbn10(),
-            'category_id' => fake()->numberBetween(1, 10),
-            'supplier_id' => fake()->numberBetween(1, 10),
-            'image' => 'https://picsum.photos/300/200?random=' . $this->faker->unique()->numberBetween(1, 1000),
-            'is_active' => fake()->boolean(),
+            'quantity' => 5,
         ];
     }
 }

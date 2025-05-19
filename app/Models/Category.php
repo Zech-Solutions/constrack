@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Category extends Model
 {
@@ -22,5 +23,13 @@ class Category extends Model
     public function parent()
     {
         return $this->belongsTo(Category::class, "parent_id");
+    }
+
+    /**
+     * Get the associated tenant account
+     */
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }

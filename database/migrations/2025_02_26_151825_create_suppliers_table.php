@@ -13,11 +13,21 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id');
             $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('address');
-            $table->string('category');
+            $table->string('email')->unique()->nullable();
+            $table->string('phone')->nullable();
+            $table->string('tin')->nullable();
+
+            $table->enum('payment_type', ['CASH', 'CHARGE'])->default('CASH');
+            $table->integer('payment_term')->default(30);
+
+            $table->text('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('postal_code')->nullable();
+            $table->string('country')->nullable();
+
             $table->timestamps();
         });
     }

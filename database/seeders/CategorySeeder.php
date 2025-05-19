@@ -13,35 +13,9 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::create([
-            "name"=> "Electronics",
-            "slug"=> "electronics",
-            "description"=> "Electronics",
-            "is_active"=> true,
-        ]);
-        Category::create([
-            "name"=> "Books",
-            "slug"=> "books",
-            "description"=> "Books",
-            "is_active"=> true,
-        ]);
-        Category::create([
-            "name"=> "Clothes",
-            "slug"=> "clothes",
-            "description"=> "Clothes",
-            "is_active"=> true,
-        ]);
-        Category::create([
-            "name"=> "Furniture",
-            "slug"=> "furniture",
-            "description"=> "Furniture",
-            "is_active"=> true,
-        ]);
-        Category::create([
-            "name"=> "Toys",
-            "slug"=> "toys",
-            "description"=> "Toys",
-            "is_active"=> true,
-        ]);
+        
+        Category::factory()
+            ->count(10)
+            ->create();
     }
 }

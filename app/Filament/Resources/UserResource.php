@@ -17,6 +17,8 @@ use Filament\Tables\Columns\Layout\Split;
 
 class UserResource extends Resource
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
