@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Clusters\ProductCluster;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -28,7 +31,7 @@ class ProductResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return "Product Entry";    
+        return "Product Entry";
     }
 
     // protected static ?string $cluster = Products::class;
@@ -51,7 +54,7 @@ class ProductResource extends Resource
                             ->searchable(),
                         TextInput::make('code')
                             ->label('Product Code')
-                            ->unique()
+                            ->unique(ignoreRecord: true)
                             ->required()
                             ->maxLength(255),
                         TextInput::make('unit')
@@ -64,6 +67,33 @@ class ProductResource extends Resource
                             ->nullable()
                             ->columnSpanFull(),
                     ]),
+                Section::make("Supplier Prices")
+                    ->schema([
+                        Repeater::make('supplierPrices')
+                            ->relationship('supplierPrices')
+                            ->label("Prices from Suppliers")
+                            ->schema([
+                                Select::make('supplier_id')
+                                    ->relationship('supplier', 'name')
+                                    ->label("Supplier")
+                                    ->required()
+                                    ->searchable()
+                                    ->preload(),
+
+                                TextInput::make('price')
+                                    ->label("Price")
+                                    ->required()
+                                    ->numeric()
+                                    ->prefix('₱'),
+
+                                DatePicker::make('date')
+                                    ->label("Date Effective")
+                                    ->required(),
+                            ])
+                            ->columns(3)
+                            ->createItemButtonLabel("Add Supplier Price"),
+                    ])
+                    ->collapsible(),
 
             ]);
     }

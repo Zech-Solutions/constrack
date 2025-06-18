@@ -40,4 +40,9 @@ class Product extends Model
     {
         return self::query()->pluck('name', 'id')->toArray();
     }
+
+    public function supplierPrices()
+    {
+        return $this->hasMany(SupplierProductPrice::class);
+    }
 }

@@ -38,4 +38,8 @@ class Supplier extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function productPrices()
+    {
+        return $this->hasMany(SupplierProductPrice::class);
+    }
 }
