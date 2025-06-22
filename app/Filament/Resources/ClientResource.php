@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClientResource\Pages;
 use App\Models\Client;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -29,102 +31,7 @@ class ClientResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('Basic Information')
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->prefixIcon('heroicon-o-user'),
-
-                        TextInput::make('email')
-                            ->email()
-                            ->unique(table: 'clients', column: 'email', ignoreRecord: true)
-                            ->prefixIcon('heroicon-o-envelope')
-                            ->maxLength(255),
-
-                        TextInput::make('phone')
-                            ->tel()
-                            ->maxLength(20)
-                            ->prefixIcon('heroicon-o-phone'),
-
-                        Select::make('type')
-                            ->options([
-                                'individual' => 'Individual',
-                                'business' => 'Business',
-                            ])
-                            ->required()
-                            ->prefixIcon('heroicon-o-tag')
-                            ->live(),
-                    ]),
-
-                // Conditional Company Fields
-                Section::make('Company Details')
-                    ->columns(2)
-                    ->visible(fn (Get $get) => $get('type') === 'business')
-                    ->schema([
-                        TextInput::make('company')
-                            ->requiredWith('type')
-                            ->maxLength(255)
-                            ->prefixIcon('heroicon-o-building-office'),
-
-                        TextInput::make('tin')
-                            ->maxLength(255)
-                            ->prefixIcon('heroicon-o-globe-alt'),
-                    ]),
-
-                // Address Section
-                Section::make('Address Information')
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('address')
-                            ->columnSpanFull()
-                            ->prefixIcon('heroicon-o-map-pin'),
-
-                        TextInput::make('city')
-                            ->prefixIcon('heroicon-o-building-library'),
-
-                        TextInput::make('state')
-                            ->prefixIcon('heroicon-o-map'),
-
-                        TextInput::make('postal_code')
-                            ->prefixIcon('heroicon-o-document-text'),
-
-                        TextInput::make('country')
-                            ->prefixIcon('heroicon-o-flag'),
-                    ]),
-
-                // Financial Section
-                Section::make('Financial Settings')
-                    ->schema([
-                        TextInput::make('credit_limit')
-                            ->numeric()
-                            ->prefix('₱')
-                            ->prefixIcon('heroicon-o-currency-dollar'),
-
-                        Select::make('payment_terms')
-                            ->options([
-                                'net_15' => 'Net 15 Days',
-                                'net_30' => 'Net 30 Days',
-                                'cod' => 'Cash on Delivery',
-                            ])
-                            ->default('net_30')
-                            ->prefixIcon('heroicon-o-clock'),
-                    ])
-                    ->columns(2),
-
-                // Status Section
-                Section::make('Status')
-                    ->schema([
-                        Toggle::make('is_active')
-                            ->label('Active client')
-                            ->default(true),
-
-                        Textarea::make('notes')
-                            ->columnSpanFull(),
-                    ]),
-            ]);
+            ->schema(self::formSchema());
     }
 
     public static function table(Table $table): Table
@@ -135,7 +42,7 @@ class ClientResource extends Resource
                     ->label('Client Name')
                     ->searchable()
                     ->sortable()
-                    ->description(fn (Client $record) => $record->company),
+                    ->description(fn(Client $record) => $record->company),
 
                 TextColumn::make('email')
                     ->searchable()
@@ -220,6 +127,59 @@ class ClientResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function formSchema()
+    {
+        return [
+            Section::make('Basic Information')
+                ->columns(2)
+                ->schema([
+                    Hidden::make('tenant_id')
+                        ->default(fn() => Filament::getTenant()?->id),
+
+                    TextInput::make('name')
+                        ->required()
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-user'),
+
+                    TextInput::make('email')
+                        ->email()
+                        ->unique(table: 'clients', column: 'email', ignoreRecord: true)
+                        ->prefixIcon('heroicon-o-envelope')
+                        ->maxLength(255),
+
+                    TextInput::make('phone')
+                        ->tel()
+                        ->maxLength(20)
+                        ->prefixIcon('heroicon-o-phone'),
+
+                    TextInput::make('tin')
+                        ->maxLength(255)
+                        ->prefixIcon('heroicon-o-globe-alt'),
+
+                    Textarea::make('address')
+                        ->columnSpanFull(),
+                ]),
+            // Financial Section
+            Section::make('Financial Settings')
+                ->schema([
+                    TextInput::make('credit_limit')
+                        ->numeric()
+                        ->prefix('₱')
+                        ->prefixIcon('heroicon-o-currency-dollar'),
+
+                    Select::make('payment_term')
+                        ->options([
+                            'net_15' => 'Net 15 Days',
+                            'net_30' => 'Net 30 Days',
+                            'cod' => 'Cash on Delivery',
+                        ])
+                        ->default('net_30')
+                        ->prefixIcon('heroicon-o-clock'),
+                ])
+                ->columns(2),
         ];
     }
 

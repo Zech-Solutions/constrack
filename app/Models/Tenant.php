@@ -54,6 +54,11 @@ class Tenant extends Model
         return $this->hasMany(Category::class);
     }
 
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
     public function units(): HasMany
     {
         return $this->hasMany(Unit::class);

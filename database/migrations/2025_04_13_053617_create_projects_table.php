@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('tenant_id');
             $table->foreignId('client_id')->references('id')->on('clients');
-            $table->string('code')->unique();
+            $table->string('code')->unique()->nullable();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('contact_person')->nullable();
+            $table->string('contact_designation')->nullable();
             $table->date('start_date')->nullable();
             $table->date('due_date')->nullable();
             $table->date('completed_date')->nullable();

@@ -18,24 +18,11 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->string('phone')->nullable();
-            $table->string('company')->nullable();
             $table->string('tin')->nullable();
-            $table->enum('type', ['individual', 'corporate'])->default('individual');
-
             $table->text('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('country')->nullable();
-
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-
             $table->decimal('credit_limit', 10, 2)->nullable();
             $table->enum('payment_type', ['CASH', 'CHARGE'])->default('CASH');
             $table->integer('payment_term')->default(30);
-
-            $table->text('notes')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -71,4 +71,17 @@ class CreateQuotation extends CreateRecord
             });
         }
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::$resource::getUrl('edit', ['record' => $this->record]);
+        // Check if the user can edit this record
+        // $user = Filament::auth()->user();
+
+        // if ($user->can('update', $this->record)) {
+        //     return static::$resource::getUrl('edit', ['record' => $this->record]);
+        // }
+
+        return static::$resource::getUrl('view', ['record' => $this->record]);
+    }
 }

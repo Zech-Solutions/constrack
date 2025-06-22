@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('Constrack')
+            ->brandName(false)
             ->colors([
                 'primary' => '#4c5c96',
             ])
@@ -58,7 +58,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->sidebarFullyCollapsibleOnDesktop();
+            ->topNavigation();
     }
 
     public function register(): void

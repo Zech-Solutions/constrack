@@ -12,6 +12,7 @@ class Quotation extends Model
     protected $fillable = [
         'tenant_id',
         'client_id',
+        'project_id',
         'title',
         'description',
         'quotation_date',
@@ -47,6 +48,11 @@ class Quotation extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     public function works(): BelongsToMany

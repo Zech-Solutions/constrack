@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Enums\QuotationStatus;
 use App\Enums\WorkType;
+use App\Filament\Clusters\ProjectManagementCluster;
 use App\Filament\Resources\QuotationResource\Pages;
+use App\Models\Project;
 use App\Models\Quotation;
 use App\Models\Work;
 use App\Models\WorkCategory;
@@ -25,7 +27,7 @@ class QuotationResource extends Resource
 {
     protected static ?string $model = Quotation::class;
 
-    protected static ?string $navigationGroup = 'Projects Management';
+    protected static ?string $cluster = ProjectManagementCluster::class;
 
     public static function form(Form $form): Form
     {
@@ -40,7 +42,26 @@ class QuotationResource extends Resource
                             ->required()
                             ->preload()
                             ->searchable()
-                            ->columnSpanFull(),
+                            ->columnSpan(2),
+                        Select::make('project_id')
+                            ->label('Project')
+                            ->relationship('project', 'name')
+                            ->required()
+                            ->preload()
+                            ->searchable()
+                            ->columnSpan(2)
+                            ->live()
+                            ->options(function (Get $get) {
+                                $client_id = $get('client_id');
+                                return Project::optionsForSelect($client_id);
+                            })
+                            ->afterStateUpdated(function ($state, Set $set) {
+                                $project = Project::find($state);
+                                if ($project) {
+                                    $set('title', $project->name);
+                                    $set('description', $project->description);
+                                }
+                            }),
                         Forms\Components\DatePicker::make('quotation_date')
                             ->required(),
                         Forms\Components\TextInput::make('term')
@@ -74,10 +95,10 @@ class QuotationResource extends Resource
                                 Select::make('work_id')
                                     ->label('Scope')
                                     ->searchable()
-                                    ->options(fn () => Work::optionsForSelect(WorkType::PRELIMINARIES))
+                                    ->options(fn() => Work::optionsForSelect(WorkType::PRELIMINARIES))
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
+                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
 
                                 Select::make('work_category_id')
                                     ->label('Sub Category')
@@ -117,10 +138,10 @@ class QuotationResource extends Resource
                                 Select::make('work_id')
                                     ->label('Scope')
                                     ->searchable()
-                                    ->options(fn () => Work::optionsForSelect(WorkType::MAIN_SCOPE))
+                                    ->options(fn() => Work::optionsForSelect(WorkType::MAIN_SCOPE))
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
+                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
 
                                 Select::make('work_category_id')
                                     ->label('Sub Category')
@@ -158,8 +179,8 @@ class QuotationResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => $state->getLabel())
-                    ->color(fn ($state) => $state->getColor()),
+                    ->formatStateUsing(fn($state) => $state->getLabel())
+                    ->color(fn($state) => $state->getColor()),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -174,7 +195,7 @@ class QuotationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => $record->status === QuotationStatus::DRAFT),
+                    ->visible(fn($record) => $record->status === QuotationStatus::DRAFT),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
