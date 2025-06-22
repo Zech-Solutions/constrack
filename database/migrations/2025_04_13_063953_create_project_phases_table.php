@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('project_phases', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id')->references('id')->on('projects');
-            $table->text("task_name");
-            $table->text("action_taken")->nullable();
-            $table->text("remarks")->nullable();
-            $table->enum("status", ["TODO","WIP","COMPLETED"])->default("TODO");
+            $table->text('task_name');
+            $table->text('action_taken')->nullable();
+            $table->text('remarks')->nullable();
+            $table->enum('status', ['TODO', 'WIP', 'COMPLETED'])->default('TODO');
             $table->timestamps();
         });
     }

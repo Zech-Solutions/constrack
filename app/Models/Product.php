@@ -10,6 +10,7 @@ class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
+
     protected $fillable = [
         'name',
         'description',
@@ -44,5 +45,10 @@ class Product extends Model
     public function supplierPrices()
     {
         return $this->hasMany(SupplierProductPrice::class);
+    }
+
+    public function supplierPricesHistory()
+    {
+        return $this->hasMany(SupplierProductPriceHistory::class);
     }
 }

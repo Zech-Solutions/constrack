@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\SupplierProductPriceHistoryResource\Pages;
 
 use App\Filament\Resources\SupplierProductPriceHistoryResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSupplierProductPriceHistory extends CreateRecord

@@ -50,6 +50,7 @@ class ClientFactory extends Factory
             'is_active' => $this->faker->boolean(90), // 90% active
         ];
     }
+
     // States for specific scenarios
     public function configure()
     {
@@ -71,14 +72,14 @@ class ClientFactory extends Factory
     {
         return $this->state([
             'type' => 'business',
-            'company' => $this->faker->company()
+            'company' => $this->faker->company(),
         ]);
     }
 
-    public function withUser(User $user = null)
+    public function withUser(?User $user = null)
     {
         return $this->state([
-            'user_id' => $user ? $user->id : User::factory()
+            'user_id' => $user ? $user->id : User::factory(),
         ]);
     }
 }

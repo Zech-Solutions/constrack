@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->decimal('price', 10, 2);
             $table->decimal('previous_price', 10, 2)->nullable();
-            $table->date('date');
+            $table->datetime('date');
             $table->timestamps();
         });
     }

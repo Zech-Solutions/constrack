@@ -15,10 +15,10 @@ class ProductSeeder extends Seeder
     {
         $lighting = ProductCategory::create(['name' => 'Lighting', 'tenant_id' => 1]);
         $conduits = ProductCategory::create(['name' => 'Conduits', 'tenant_id' => 1]);
-        $accessories = ProductCategory::create(['name' => 'Electrical Accessories','tenant_id' => 1]);
+        $accessories = ProductCategory::create(['name' => 'Electrical Accessories', 'tenant_id' => 1]);
         $wires = ProductCategory::create(['name' => 'Wires & Cables', 'tenant_id' => 1]);
         $support = ProductCategory::create(['name' => 'Mounting & Support', 'tenant_id' => 1]);
-        $misc = ProductCategory::create(['name' => 'Miscellaneous/Consumables','tenant_id' => 1]);
+        $misc = ProductCategory::create(['name' => 'Miscellaneous/Consumables', 'tenant_id' => 1]);
 
         Product::create([
             'tenant_id' => 1,

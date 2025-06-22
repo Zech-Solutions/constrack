@@ -4,10 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Clusters\ScopeOfWorkCluster;
 use App\Filament\Resources\WorkCategoryResource\Pages;
-use App\Filament\Resources\WorkCategoryResource\RelationManagers;
 use App\Models\Product;
 use App\Models\WorkCategory;
-use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -18,8 +16,6 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WorkCategoryResource extends Resource
 {
@@ -31,14 +27,14 @@ class WorkCategoryResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return "Sub Category";
+        return 'Sub Category';
     }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make("Work Category Information")
+                Section::make('Work Category Information')
                     ->columns(4)
                     ->schema([
                         TextInput::make('name')
@@ -66,19 +62,19 @@ class WorkCategoryResource extends Resource
                             ->numeric()
                             ->default(null),
                         Toggle::make('is_default')
-                            ->label("Set default for Quotation?")
+                            ->label('Set default for Quotation?')
                             ->inline(false),
                     ]),
-                Section::make("Attach Raw Materials (Main Scope)")
+                Section::make('Attach Raw Materials (Main Scope)')
                     ->schema([
-                        Repeater::make("materials")
+                        Repeater::make('materials')
                             ->relationship()
                             ->columns(3)
                             ->schema([
                                 Select::make('product_id')
-                                    ->label("Product")
+                                    ->label('Product')
                                     ->searchable()
-                                    ->options(fn() => Product::optionsForSelect())
+                                    ->options(fn () => Product::optionsForSelect())
                                     ->live()
                                     ->required()
                                     ->afterStateUpdated(function ($state, Set $set) {
@@ -95,11 +91,11 @@ class WorkCategoryResource extends Resource
                                 TextInput::make('unit')
                                     ->readOnly()
                                     ->dehydrated(false)
-                                    ->default(fn($state) => $state),
+                                    ->default(fn ($state) => $state),
                             ])
                             ->default([])
-                            ->minItems(0)
-                    ])
+                            ->minItems(0),
+                    ]),
             ]);
     }
 
@@ -108,7 +104,7 @@ class WorkCategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('work.name')
-                    ->label("Scope of Work")
+                    ->label('Scope of Work')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')

@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ProductCategory extends Model
 {
     protected $fillable = [
-        "name",
-        "description",
+        'name',
+        'description',
     ];
 
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
     }
-    
+
     public function product(): HasMany
     {
         return $this->hasMany(Product::class);

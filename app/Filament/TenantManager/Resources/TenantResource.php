@@ -3,10 +3,8 @@
 namespace App\Filament\TenantManager\Resources;
 
 use App\Filament\TenantManager\Resources\TenantResource\Pages;
-use App\Filament\TenantManager\Resources\TenantResource\RelationManagers;
 use App\Filament\TenantManager\Resources\TenantResource\RelationManagers\UsersRelationManager;
 use App\Models\Tenant;
-use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -14,8 +12,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TenantResource extends Resource
 {
@@ -30,17 +26,17 @@ class TenantResource extends Resource
                 Section::make()
                     ->columns(2)
                     ->schema([
-                        TextInput::make("name")
-                            ->label("Tenant Name")
+                        TextInput::make('name')
+                            ->label('Tenant Name')
                             ->required(),
-                        TextInput::make("email")
-                            ->label("Email")
+                        TextInput::make('email')
+                            ->label('Email')
                             ->email()
                             ->required(),
-                        TextInput::make("contact")
-                            ->label("Contact")
+                        TextInput::make('contact')
+                            ->label('Contact')
                             ->required(),
-                    ])
+                    ]),
             ]);
     }
 
@@ -48,15 +44,15 @@ class TenantResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make("name")
-                    ->label("Tenant Name")
+                TextColumn::make('name')
+                    ->label('Tenant Name')
                     ->searchable(),
-                TextColumn::make("email")
-                    ->label("Tenant Email")
+                TextColumn::make('email')
+                    ->label('Tenant Email')
                     ->searchable(),
-                TextColumn::make("Contact")
-                    ->label("Contact")
-                    ->searchable()
+                TextColumn::make('Contact')
+                    ->label('Contact')
+                    ->searchable(),
             ])
             ->filters([
                 //
@@ -74,7 +70,7 @@ class TenantResource extends Resource
     public static function getRelations(): array
     {
         return [
-            UsersRelationManager::class
+            UsersRelationManager::class,
         ];
     }
 

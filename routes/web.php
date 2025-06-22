@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SupplierController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [SupplierController::class, 'index']);

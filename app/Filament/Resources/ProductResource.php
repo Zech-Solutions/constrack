@@ -5,19 +5,15 @@ namespace App\Filament\Resources;
 use App\Filament\Clusters\ProductCluster;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Repeater;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -31,7 +27,7 @@ class ProductResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return "Product Entry";
+        return 'Product Entry';
     }
 
     // protected static ?string $cluster = Products::class;
@@ -59,7 +55,7 @@ class ProductResource extends Resource
                             ->maxLength(255),
                         TextInput::make('unit')
                             ->label('Product Unit')
-                            ->helperText("kg, g, m")
+                            ->helperText('kg, g, m')
                             ->required()
                             ->maxLength(255),
                         Textarea::make('description')
@@ -67,31 +63,32 @@ class ProductResource extends Resource
                             ->nullable()
                             ->columnSpanFull(),
                     ]),
-                Section::make("Supplier Prices")
+                Section::make('Supplier Prices')
                     ->schema([
-                        Repeater::make('supplierPrices')
+                        TableRepeater::make('supplierPrices')
+                            ->headers([
+                                Header::make('Supplier'),
+                                Header::make('Price'),
+                            ])
+                            ->renderHeader(false)
                             ->relationship('supplierPrices')
-                            ->label("Prices from Suppliers")
+                            ->label('Prices from Suppliers')
                             ->schema([
                                 Select::make('supplier_id')
                                     ->relationship('supplier', 'name')
-                                    ->label("Supplier")
+                                    ->label('Supplier')
                                     ->required()
                                     ->searchable()
-                                    ->preload(),
+                                    ->preload()
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
 
                                 TextInput::make('price')
-                                    ->label("Price")
+                                    ->label('Price')
                                     ->required()
                                     ->numeric()
                                     ->prefix('₱'),
-
-                                DatePicker::make('date')
-                                    ->label("Date Effective")
-                                    ->required(),
                             ])
-                            ->columns(3)
-                            ->createItemButtonLabel("Add Supplier Price"),
+                            ->columnSpan('full'),
                     ])
                     ->collapsible(),
 
@@ -112,7 +109,7 @@ class ProductResource extends Resource
                 TextColumn::make('category.name')
                     ->label('Category')
                     ->sortable()
-                    ->searchable()
+                    ->searchable(),
             ])
             ->filters([
                 //

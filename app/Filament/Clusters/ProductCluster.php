@@ -10,6 +10,6 @@ class ProductCluster extends Cluster
 
     public static function getNavigationLabel(): string
     {
-        return "Products";
+        return 'Products';
     }
 }

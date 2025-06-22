@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 
-class User extends Authenticatable implements HasTenants,FilamentUser
+class User extends Authenticatable implements FilamentUser, HasTenants
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -70,6 +70,6 @@ class User extends Authenticatable implements HasTenants,FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;//str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
+        return true; // str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     }
 }

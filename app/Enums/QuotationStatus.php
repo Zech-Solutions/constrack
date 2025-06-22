@@ -4,13 +4,13 @@ namespace App\Enums;
 
 enum QuotationStatus: string
 {
-    case DRAFT = "DRAFT";
+    case DRAFT = 'DRAFT';
 
-    case PENDING = "PENDING";
+    case PENDING = 'PENDING';
 
-    case APPROVED = "APPROVED";
+    case APPROVED = 'APPROVED';
 
-    case DECLINED = "DECLINED";
+    case DECLINED = 'DECLINED';
 
     public function getLabel(): string
     {

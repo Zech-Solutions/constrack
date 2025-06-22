@@ -25,13 +25,13 @@ class Work extends Model
 
     public static function optionsForSelect($workType = null): array
     {
-        if(!empty($workType)){
+        if (! empty($workType)) {
             return self::query()
-                ->where("scope", $workType)
+                ->where('scope', $workType)
                 ->pluck('name', 'id')
                 ->toArray();
         }
-        
+
         return self::query()->pluck('name', 'id')->toArray();
     }
 }

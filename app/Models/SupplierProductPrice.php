@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Log;
 
 class SupplierProductPrice extends Model
 {
@@ -16,7 +15,7 @@ class SupplierProductPrice extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'previous_price' => 'decimal:2',
-        'date' => 'date',
+        'date' => 'datetime',
     ];
 
     public function product()
@@ -41,23 +40,29 @@ class SupplierProductPrice extends Model
 
     protected static function booted(): void
     {
+        static::creating(function ($model) {
+            if (empty($model->date)) {
+                $model->date = now()->toDateTimeString();
+            }
+        });
+
         static::created(function ($model) {
             SupplierProductPriceHistory::create([
-                'product_id'     => $model->product_id,
-                'supplier_id'    => $model->supplier_id,
-                'price'          => $model->price,
+                'product_id' => $model->product_id,
+                'supplier_id' => $model->supplier_id,
+                'price' => $model->price,
                 'previous_price' => null,
-                'date'           => $model->date,
+                'date' => $model->date,
             ]);
         });
 
         static::updated(function ($model) {
             SupplierProductPriceHistory::create([
-                'product_id'     => $model->product_id,
-                'supplier_id'    => $model->supplier_id,
-                'price'          => $model->price,
+                'product_id' => $model->product_id,
+                'supplier_id' => $model->supplier_id,
+                'price' => $model->price,
                 'previous_price' => $model->getOriginal('price'),
-                'date'           => $model->date,
+                'date' => $model->date,
             ]);
         });
     }

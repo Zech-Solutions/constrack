@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('works', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tenant_id');
-            $table->string("name");
-            $table->string("description")->nullable();
-            $table->enum("scope", ['Preliminaries', 'Main Scope'])->default('Preliminaries');
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->enum('scope', ['Preliminaries', 'Main Scope'])->default('Preliminaries');
             $table->timestamps();
         });
     }

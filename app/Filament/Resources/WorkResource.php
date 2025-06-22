@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Enums\WorkType;
 use App\Filament\Clusters\ScopeOfWorkCluster;
 use App\Filament\Resources\WorkResource\Pages;
-use App\Filament\Resources\WorkResource\RelationManagers;
 use App\Models\Work;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -14,8 +13,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class WorkResource extends Resource
 {
@@ -27,7 +24,7 @@ class WorkResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return "Main Category";    
+        return 'Main Category';
     }
 
     public static function form(Form $form): Form
@@ -46,7 +43,7 @@ class WorkResource extends Resource
                         Forms\Components\TextInput::make('description')
                             ->maxLength(255)
                             ->default(null),
-                    ])
+                    ]),
             ]);
     }
 

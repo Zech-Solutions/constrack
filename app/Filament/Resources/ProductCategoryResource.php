@@ -4,9 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Clusters\ProductCluster;
 use App\Filament\Resources\ProductCategoryResource\Pages;
-use App\Filament\Resources\ProductCategoryResource\RelationManagers;
 use App\Models\ProductCategory;
-use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -14,8 +12,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductCategoryResource extends Resource
 {
@@ -35,9 +31,10 @@ class ProductCategoryResource extends Resource
                         Textarea::make('description')
                             ->label('Description')
                             ->nullable(),
-                    ])
+                    ]),
             ]);
     }
+
     public static function table(Table $table): Table
     {
         return $table

@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Unit extends Model
 {
     protected $fillable = [
-        "name",
-        "short_name",
+        'name',
+        'short_name',
     ];
 
     /**
