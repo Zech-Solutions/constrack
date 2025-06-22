@@ -4,10 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Clusters\ProjectManagementCluster;
 use App\Filament\Resources\ProjectResource\Pages;
-use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
-use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -18,10 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
-
 
 class ProjectResource extends Resource
 {
@@ -33,7 +27,7 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                Section::make("Project Information")
+                Section::make('Project Information')
                     ->columns(4)
                     ->schema([
                         Select::make('client_id')
@@ -49,30 +43,30 @@ class ProjectResource extends Resource
                                 }
                             ),
                         TextInput::make('code')
-                            ->label("Project Code")
+                            ->label('Project Code')
                             ->maxLength(255)
                             ->required()
-                            ->default(function(){
-                                return sprintf("PRJ-%s", Str::upper(Str::random(6)));
+                            ->default(function () {
+                                return sprintf('PRJ-%s', Str::upper(Str::random(6)));
                             }),
                         TextInput::make('name')
-                            ->label("Title")
+                            ->label('Title')
                             ->required()
                             ->maxLength(255)
                             ->columnSpan(3),
                         Textarea::make('description')
-                            ->label("Project Description")
+                            ->label('Project Description')
                             ->maxLength(255)
                             ->columnSpanFull(),
                         TextInput::make('contact_person')
-                            ->label("Contact Person")
+                            ->label('Contact Person')
                             ->maxLength(255),
                         TextInput::make('contact_designation')
-                            ->label("Contact Person Designation")
+                            ->label('Contact Person Designation')
                             ->maxLength(255),
                         DatePicker::make('start_date'),
                         DatePicker::make('due_date'),
-                    ])
+                    ]),
             ]);
     }
 

@@ -53,6 +53,7 @@ class QuotationResource extends Resource
                             ->live()
                             ->options(function (Get $get) {
                                 $client_id = $get('client_id');
+
                                 return Project::optionsForSelect($client_id);
                             })
                             ->afterStateUpdated(function ($state, Set $set) {
@@ -95,10 +96,10 @@ class QuotationResource extends Resource
                                 Select::make('work_id')
                                     ->label('Scope')
                                     ->searchable()
-                                    ->options(fn() => Work::optionsForSelect(WorkType::PRELIMINARIES))
+                                    ->options(fn () => Work::optionsForSelect(WorkType::PRELIMINARIES))
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
 
                                 Select::make('work_category_id')
                                     ->label('Sub Category')
@@ -138,10 +139,10 @@ class QuotationResource extends Resource
                                 Select::make('work_id')
                                     ->label('Scope')
                                     ->searchable()
-                                    ->options(fn() => Work::optionsForSelect(WorkType::MAIN_SCOPE))
+                                    ->options(fn () => Work::optionsForSelect(WorkType::MAIN_SCOPE))
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
 
                                 Select::make('work_category_id')
                                     ->label('Sub Category')
@@ -179,8 +180,8 @@ class QuotationResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state->getLabel())
-                    ->color(fn($state) => $state->getColor()),
+                    ->formatStateUsing(fn ($state) => $state->getLabel())
+                    ->color(fn ($state) => $state->getColor()),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -195,7 +196,7 @@ class QuotationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => $record->status === QuotationStatus::DRAFT),
+                    ->visible(fn ($record) => $record->status === QuotationStatus::DRAFT),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

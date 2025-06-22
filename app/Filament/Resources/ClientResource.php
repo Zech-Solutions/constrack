@@ -10,9 +10,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
@@ -42,7 +40,7 @@ class ClientResource extends Resource
                     ->label('Client Name')
                     ->searchable()
                     ->sortable()
-                    ->description(fn(Client $record) => $record->company),
+                    ->description(fn (Client $record) => $record->company),
 
                 TextColumn::make('email')
                     ->searchable()
@@ -137,7 +135,7 @@ class ClientResource extends Resource
                 ->columns(2)
                 ->schema([
                     Hidden::make('tenant_id')
-                        ->default(fn() => Filament::getTenant()?->id),
+                        ->default(fn () => Filament::getTenant()?->id),
 
                     TextInput::make('name')
                         ->required()
