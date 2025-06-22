@@ -7,47 +7,40 @@ use App\Enums\QuotationStatus;
 use App\Enums\WorkType;
 use App\Filament\Resources\QuotationResource;
 use App\Models\Product;
-use App\Models\QuotationItem;
-use App\Models\SubSection;
 use App\Models\Work;
 use App\Models\WorkCategory;
-use Closure;
 use Filament\Actions;
-use Filament\Forms\Form;
-use Filament\Resources\Pages\EditRecord;
-use Filament\Forms\Components\{
-    Actions as ComponentsActions,
-    Button,
-    DatePicker,
-    Grid,
-    Hidden,
-    Repeater,
-    Section,
-    Select,
-    Tabs,
-    Textarea,
-    TextInput,
-    Wizard,
-    Wizard\Step
-};
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Actions as ComponentsActions;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\HtmlString;
 
 class EditQuotation extends EditRecord
 {
     protected static string $resource = QuotationResource::class;
+
     public function mount($record): void
     {
         parent::mount($record);
 
         $this->calculateInitialValues();
     }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -77,7 +70,7 @@ class EditQuotation extends EditRecord
                     Step::make('Overview')
                         ->schema($this->getStepOverview()),
                 ])
-                    ->columnSpanFull()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -113,77 +106,78 @@ class EditQuotation extends EditRecord
     public function getStepPreliminaries(): array
     {
         return [
-            Section::make("Preliminaries")
+            Section::make('Preliminaries')
                 ->schema([
-                    Repeater::make("preliminaries")
+                    Repeater::make('preliminaries')
                         ->label(false)
                         ->relationship(
                             name: 'quotationItems',
-                            modifyQueryUsing: fn(Builder $query) => $query
+                            modifyQueryUsing: fn (Builder $query) => $query
                                 ->where('type', QuotationItemType::PRELIMINARIES)
                         )
                         ->schema([
                             Select::make('work_id')
-                                ->label("Scope")
+                                ->label('Scope')
                                 ->searchable()
-                                ->options(fn() => Work::optionsForSelect(WorkType::PRELIMINARIES))
+                                ->options(fn () => Work::optionsForSelect(WorkType::PRELIMINARIES))
                                 ->live()
                                 ->required()
-                                ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+                                ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
 
                             Select::make('work_category_id')
-                                ->label("Sub Category")
+                                ->label('Sub Category')
                                 ->searchable()
                                 ->required()
                                 ->options(function (Get $get) {
                                     $work_id = $get('work_id');
+
                                     return WorkCategory::optionsForSelect($work_id);
                                 })
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                             TextInput::make('total')
-                                ->label("Amount")
+                                ->label('Amount')
                                 ->required()
                                 ->numeric()
                                 ->reactive()
                                 ->debounce(1000)
-                                ->afterStateUpdated(fn() => $this->calculateDirectCost()),
+                                ->afterStateUpdated(fn () => $this->calculateDirectCost()),
                         ])
-                        ->columns(3)
-                ])
+                        ->columns(3),
+                ]),
         ];
     }
 
     public function getStepMainWorks(): array
     {
         return [
-            Tabs::make("Scope of Works")
+            Tabs::make('Scope of Works')
                 ->tabs($this->getTabMainWorks())
-                ->columnSpanFull()
+                ->columnSpanFull(),
         ];
     }
 
     public function getStepOverview()
     {
         return [
-            Section::make("Review Quotation")
-                ->description("Check the information before saving")
+            Section::make('Review Quotation')
+                ->description('Check the information before saving')
                 ->schema([
                     TextInput::make('client_name')
                         ->label('Client')
-                        ->default(fn() => $this->record?->client?->name)
+                        ->default(fn () => $this->record?->client?->name)
                         ->disabled(),
                     TextInput::make('quotation_date')
-                        ->default(fn() => $this->record?->quotation_date)
+                        ->default(fn () => $this->record?->quotation_date)
                         ->disabled(),
                     TextInput::make('title')
-                        ->default(fn() => $this->record?->title)
+                        ->default(fn () => $this->record?->title)
                         ->disabled(),
                     Textarea::make('description')
-                        ->default(fn() => $this->record?->description)
+                        ->default(fn () => $this->record?->description)
                         ->disabled(),
                 ]),
-            Section::make("Cost Summary")
-                ->description("Overview of costs including VAT")
+            Section::make('Cost Summary')
+                ->description('Overview of costs including VAT')
                 ->schema([
                     TextInput::make('direct_cost')
                         ->label('Direct Cost')
@@ -207,16 +201,16 @@ class EditQuotation extends EditRecord
                     ->color('danger')
                     ->icon('heroicon-m-sparkles')
                     ->outlined()
-                    ->action(fn() => $this->setStatus(QuotationStatus::DRAFT)),
+                    ->action(fn () => $this->setStatus(QuotationStatus::DRAFT)),
 
                 Action::make('finish')
                     ->label('Finish')
                     ->color('primary')
                     ->icon('heroicon-m-sparkles')
                     ->outlined()
-                    ->action(fn() => $this->setStatus(QuotationStatus::PENDING)),
+                    ->action(fn () => $this->setStatus(QuotationStatus::PENDING)),
             ])
-                ->alignEnd()
+                ->alignEnd(),
         ];
     }
 
@@ -235,7 +229,9 @@ class EditQuotation extends EditRecord
 
         $record = $this->record;
 
-        if (! $record) return [];
+        if (! $record) {
+            return [];
+        }
 
         $grouped = $record->quotationItems()
             ->with('work', 'product')
@@ -243,20 +239,19 @@ class EditQuotation extends EditRecord
             ->get()
             ->groupBy('work_id');
 
-
         $tabs = [];
 
         foreach ($grouped as $work_id => $items) {
-            $tabname = $items->first()->work->name ?? "Work";
+            $tabname = $items->first()->work->name ?? 'Work';
 
             $tabs[] = Tab::make($tabname)
                 ->badge(
-                    fn(Get $get) =>
-                    count($get("items_{$work_id}") ?? [])
+                    fn (Get $get) => count($get("items_{$work_id}") ?? [])
                 )->schema([
                     ...$this->getTabCategory($work_id),
                 ]);
         }
+
         return $tabs;
     }
 
@@ -266,13 +261,14 @@ class EditQuotation extends EditRecord
 
         $profitPercent = $record->profit_percent;
 
-        Log::debug("Section id: " . $workId);
+        Log::debug('Section id: '.$workId);
+
         return [
             Repeater::make("items_{$workId}")
                 ->label(false)
                 ->relationship(
                     name: 'quotationItems',
-                    modifyQueryUsing: fn(Builder $query) => $query
+                    modifyQueryUsing: fn (Builder $query) => $query
                         ->where('work_id', $workId)
                         ->where('type', QuotationItemType::SUB_CATEGORY)
                 )
@@ -282,39 +278,38 @@ class EditQuotation extends EditRecord
                     Select::make('work_category_id')
                         ->label('Category')
                         ->searchable()
-                        ->options(fn() => WorkCategory::optionsForSelect($workId))
+                        ->options(fn () => WorkCategory::optionsForSelect($workId))
                         ->columnSpan(2)
                         ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                         ->reactive()
-                        ->afterStateUpdated(fn($state, Set $set) => $set('work_category_id', $state)),
+                        ->afterStateUpdated(fn ($state, Set $set) => $set('work_category_id', $state)),
                     TextInput::make('quantity')
                         ->numeric()
                         ->reactive()
                         ->debounce(1000)
                         ->default(1)
-                        ->afterStateUpdated(fn() => $this->calculateDirectCost()),
+                        ->afterStateUpdated(fn () => $this->calculateDirectCost()),
                     Hidden::make('unit_cost')
                         ->default(0),
                     TextInput::make('unit_price')
-                        ->label("Costs")
+                        ->label('Costs')
                         ->default(0)
-                        ->helperText("Total Material Cost")
+                        ->helperText('Total Material Cost')
                         ->readOnly()
                         ->numeric(),
                     TextInput::make('labor_fee')
                         ->numeric()
                         ->reactive()
                         ->debounce(1000)
-                        ->afterStateUpdated(fn() => $this->calculateDirectCost()),
+                        ->afterStateUpdated(fn () => $this->calculateDirectCost()),
                     TextInput::make('total')
-                        ->label("Total Amount")
+                        ->label('Total Amount')
                         ->readOnly()
                         ->numeric(),
 
-                    Section::make("Materials")
+                    Section::make('Materials')
                         ->description(
-                            fn(Get $get) =>
-                            'You have ' . count($get('materials') ?? []) . ' material item(s).'
+                            fn (Get $get) => 'You have '.count($get('materials') ?? []).' material item(s).'
                         )
                         ->schema([
                             Repeater::make('materials')
@@ -339,7 +334,7 @@ class EditQuotation extends EditRecord
                                     Select::make('product_id')
                                         ->label('Materials')
                                         ->searchable()
-                                        ->options(fn() => Product::optionsForSelect())
+                                        ->options(fn () => Product::optionsForSelect())
                                         ->columnSpan(2)
                                         ->required()
                                         ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
@@ -349,14 +344,14 @@ class EditQuotation extends EditRecord
                                         ->numeric()
                                         ->default(0)
                                         ->reactive()
-                                        ->debounce(1000)->afterStateUpdated(function ($state, Get $get, Set $set) use ($profitPercent) {
+                                        ->debounce(1000)->afterStateUpdated(function ($state, Get $get, Set $set) {
                                             $unitPrice = $get('unit_price') ?? 0;
                                             $set('amount', round($state * $unitPrice, 2));
                                             $this->calculateDirectCost();
                                         }),
 
                                     TextInput::make('unit_cost')
-                                        ->label("Cost")
+                                        ->label('Cost')
                                         ->numeric()
                                         ->default(0)
                                         ->reactive()
@@ -371,23 +366,23 @@ class EditQuotation extends EditRecord
                                         }),
 
                                     TextInput::make('unit_price')
-                                        ->label("Price")
+                                        ->label('Price')
                                         ->numeric()
                                         ->readOnly()
                                         ->default(0)
-                                        ->helperText("Cost x Profit %"),
+                                        ->helperText('Cost x Profit %'),
 
                                     TextInput::make('amount')
-                                        ->label("Amount")
+                                        ->label('Amount')
                                         ->numeric()
                                         ->default(0)
                                         ->readOnly()
-                                        ->helperText("Qty x Price"),
+                                        ->helperText('Qty x Price'),
                                 ])
                                 ->defaultItems(0)
-                                ->columns(6)
+                                ->columns(6),
                         ])
-                        ->collapsed()
+                        ->collapsed(),
                 ])
                 ->columns(6),
 
@@ -409,7 +404,7 @@ class EditQuotation extends EditRecord
         $total = 0;
         $workCategories = $this->data[$itemWork];
         foreach ($workCategories as $workCategoryId => $workCategory) {
-            $materialCost = collect($workCategory['materials'])->sum(fn($item) => ($item['amount'] ?? 0));
+            $materialCost = collect($workCategory['materials'])->sum(fn ($item) => ($item['amount'] ?? 0));
             $workCategory['unit_cost'] = $materialCost;
             $workCategory['unit_price'] = $materialCost;
             $workCategory['total'] = ($workCategory['unit_price'] * $workCategory['quantity']) + $workCategory['labor_fee'];
@@ -417,16 +412,18 @@ class EditQuotation extends EditRecord
             $this->data[$itemWork][$workCategoryId] = $workCategory;
             $total += $workCategory['total'];
         }
+
         return $total;
     }
 
     public function calculateMainWorks()
     {
-        $mainWorks = array_filter(array_keys($this->data), fn($key) => str_starts_with($key, 'items_'));
+        $mainWorks = array_filter(array_keys($this->data), fn ($key) => str_starts_with($key, 'items_'));
         $total = 0;
         foreach ($mainWorks as $mainWorks) {
             $total += $this->calculateWorksTotal($mainWorks);
         }
+
         return $total;
     }
 
@@ -450,14 +447,14 @@ class EditQuotation extends EditRecord
     public function calculatePreliminariesSum()
     {
         return collect($this->data['preliminaries'])
-            ->sum(fn($item) => ($item['total'] ?? 0));
+            ->sum(fn ($item) => ($item['total'] ?? 0));
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
 
         $action = request()->input('action');
-        Log::debug("status: " . $action);
+        Log::debug('status: '.$action);
 
         if ($action === 'finish') {
             $data['status'] = 'PENDNG';

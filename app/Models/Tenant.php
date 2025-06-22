@@ -9,21 +9,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Tenant extends Model
 {
     protected $fillable = [
-        "name",
-        "email",
-        "contact",
-        "data"
+        'name',
+        'email',
+        'contact',
+        'data',
     ];
 
     protected $casts = [
-        'data' => 'array'
+        'data' => 'array',
     ];
 
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
-    
+
     public function clients(): HasMany
     {
         return $this->hasMany(Client::class);
@@ -33,7 +33,7 @@ class Tenant extends Model
     {
         return $this->hasMany(Supplier::class);
     }
-    
+
     public function productCategories(): HasMany
     {
         return $this->hasMany(ProductCategory::class);

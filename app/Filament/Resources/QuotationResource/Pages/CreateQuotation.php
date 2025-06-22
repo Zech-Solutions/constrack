@@ -5,8 +5,6 @@ namespace App\Filament\Resources\QuotationResource\Pages;
 use App\Enums\QuotationItemType;
 use App\Filament\Resources\QuotationResource;
 use App\Models\CategoryMaterial;
-use App\Models\SubsectionItem;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateQuotation extends CreateRecord
@@ -58,8 +56,8 @@ class CreateQuotation extends CreateRecord
             $categoryMaterials = CategoryMaterial::query()
                 ->where('work_category_id', $item['work_category_id'])
                 ->get();
-            
-            $categoryMaterials->each(function(CategoryMaterial $categoryMaterial) use($item, $details){
+
+            $categoryMaterials->each(function (CategoryMaterial $categoryMaterial) use ($item, $details) {
                 $this->record->quotationItems()->create([
                     'work_id' => $item['work_id'],
                     'work_category_id' => $item['work_category_id'],
@@ -73,5 +71,4 @@ class CreateQuotation extends CreateRecord
             });
         }
     }
-
 }

@@ -3,10 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubSectionResource\Pages;
-use App\Filament\Resources\SubSectionResource\RelationManagers;
 use App\Models\Product;
 use App\Models\SubSection;
-use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -16,8 +14,6 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubSectionResource extends Resource
 {
@@ -29,7 +25,7 @@ class SubSectionResource extends Resource
     {
         return $form
             ->schema([
-                Section::make("Subsection Information")
+                Section::make('Subsection Information')
                     ->schema([
                         TextInput::make('name')
                             ->required()
@@ -47,15 +43,15 @@ class SubSectionResource extends Resource
                             ->maxLength(255)
                             ->default(null),
                     ]),
-                Section::make("Attach Raw Materials")
+                Section::make('Attach Raw Materials')
                     ->schema([
-                        Repeater::make("items")
+                        Repeater::make('items')
                             ->relationship()
                             ->columns(3)
                             ->schema([
                                 Select::make('product_id')
                                     // ->relationship('product', 'name')
-                                    ->label("Product")
+                                    ->label('Product')
                                     ->searchable()
                                     ->options(fn () => Product::optionsForSelect())
                                     ->live()
@@ -76,8 +72,8 @@ class SubSectionResource extends Resource
                                     ->default(fn ($state) => $state),
                             ])
                             ->default([])
-                            ->minItems(0)
-                    ])
+                            ->minItems(0),
+                    ]),
             ]);
     }
 

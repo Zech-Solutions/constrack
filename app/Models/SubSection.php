@@ -12,8 +12,9 @@ class SubSection extends Model
         'description',
         'section_id',
         'unit',
-        'quantity'
+        'quantity',
     ];
+
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
@@ -38,7 +39,7 @@ class SubSection extends Model
 
     public static function getOptionsForForm(?int $sectionId): array
     {
-        if (!$sectionId) {
+        if (! $sectionId) {
             return [];
         }
 

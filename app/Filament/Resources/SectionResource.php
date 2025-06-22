@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SectionResource\Pages;
-use App\Filament\Resources\SectionResource\RelationManagers;
 use App\Models\Section as SectionModel;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -11,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SectionResource extends Resource
 {
@@ -32,7 +29,7 @@ class SectionResource extends Resource
                         Forms\Components\TextInput::make('description')
                             ->maxLength(255)
                             ->default(null),
-                    ])
+                    ]),
             ]);
     }
 

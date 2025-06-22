@@ -14,7 +14,7 @@ class WorkCategory extends Model
         'unit',
         'quantity',
         'amount',
-        'is_default'
+        'is_default',
     ];
 
     protected $casts = [
@@ -38,9 +38,10 @@ class WorkCategory extends Model
 
     public static function optionsForSelect(?int $workId): array
     {
-        if (!$workId) {
+        if (! $workId) {
             return [];
         }
+
         return self::where('work_id', $workId)
             ->pluck('name', 'id')
             ->toArray();

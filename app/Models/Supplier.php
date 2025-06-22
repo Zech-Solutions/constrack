@@ -10,6 +10,7 @@ class Supplier extends Model
 {
     /** @use HasFactory<\Database\Factories\SupplierFactory> */
     use HasFactory;
+
     protected $fillable = [
         'name',
         'email',
@@ -21,10 +22,12 @@ class Supplier extends Model
         'postal_code',
         'country',
     ];
+
     public function products()
     {
         return $this->hasMany(Product::class);
     }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -38,4 +41,8 @@ class Supplier extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function productPrices()
+    {
+        return $this->hasMany(SupplierProductPrice::class);
+    }
 }

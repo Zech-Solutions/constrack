@@ -6,7 +6,6 @@ use App\Enums\QuotationStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quotation extends Model
 {
@@ -24,11 +23,11 @@ class Quotation extends Model
         'direct_cost',
         'vat_cost',
         'total_cost',
-        'status'
+        'status',
     ];
 
     protected $casts = [
-        'status' => QuotationStatus::class
+        'status' => QuotationStatus::class,
     ];
 
     protected static function booted()
@@ -36,7 +35,7 @@ class Quotation extends Model
         static::creating(function ($quotation) {
             $lastNumber = self::max('id') ?? 0;
             $nextNumber = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
-            $quotation->code = 'BOQ-' . $nextNumber;
+            $quotation->code = 'BOQ-'.$nextNumber;
         });
     }
 

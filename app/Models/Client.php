@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
@@ -34,7 +34,7 @@ class Client extends Model
         'credit_limit',
         'payment_terms',
         'notes',
-        'is_active'
+        'is_active',
     ];
 
     /**
@@ -125,7 +125,7 @@ class Client extends Model
             $this->city,
             $this->state,
             $this->postal_code,
-            $this->country
+            $this->country,
         ]));
     }
 

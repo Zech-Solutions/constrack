@@ -12,8 +12,9 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = Supplier::orderBy("created_at","desc")->paginate(10);
-        return view("welcome", compact("suppliers"));
+        $suppliers = Supplier::orderBy('created_at', 'desc')->paginate(10);
+
+        return view('welcome', compact('suppliers'));
     }
 
     /**

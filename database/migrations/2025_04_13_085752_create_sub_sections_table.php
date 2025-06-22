@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tenant_id');
             $table->foreignId('section_id')->references('id')->on('sections');
-            $table->string("name");
-            $table->string("description")->nullable();
-            $table->string("unit");
+            $table->string('name');
+            $table->string('description')->nullable();
+            $table->string('unit');
             $table->decimal('quantity', 12, 2)->default(1);
             $table->timestamps();
         });

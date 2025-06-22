@@ -19,11 +19,11 @@ class QuotationItem extends Model
         'labor_fee',
         'total',
         'quantity',
-        'type'
+        'type',
     ];
 
     protected $casts = [
-        'type' => QuotationItemType::class
+        'type' => QuotationItemType::class,
     ];
 
     public function quotation()

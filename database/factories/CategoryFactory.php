@@ -20,7 +20,7 @@ class CategoryFactory extends Factory
             'tenant_id' => 1,
             'name' => fake()->name(),
             'slug' => fake()->slug(),
-            'description'=> fake()->text(30),
+            'description' => fake()->text(30),
         ];
     }
 }

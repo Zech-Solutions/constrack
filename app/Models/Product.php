@@ -10,6 +10,7 @@ class Product extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory;
+
     protected $fillable = [
         'name',
         'description',
@@ -39,5 +40,15 @@ class Product extends Model
     public static function optionsForSelect(): array
     {
         return self::query()->pluck('name', 'id')->toArray();
+    }
+
+    public function supplierPrices()
+    {
+        return $this->hasMany(SupplierProductPrice::class);
+    }
+
+    public function supplierPricesHistory()
+    {
+        return $this->hasMany(SupplierProductPriceHistory::class);
     }
 }

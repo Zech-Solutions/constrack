@@ -4,9 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ClientResource\Pages;
 use App\Models\Client;
-use Filament\Forms\Components\Builder;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -22,7 +19,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
 
 class ClientResource extends Resource
 {
@@ -66,7 +62,7 @@ class ClientResource extends Resource
                 // Conditional Company Fields
                 Section::make('Company Details')
                     ->columns(2)
-                    ->visible(fn(Get $get) => $get('type') === 'business')
+                    ->visible(fn (Get $get) => $get('type') === 'business')
                     ->schema([
                         TextInput::make('company')
                             ->requiredWith('type')
@@ -139,7 +135,7 @@ class ClientResource extends Resource
                     ->label('Client Name')
                     ->searchable()
                     ->sortable()
-                    ->description(fn(Client $record) => $record->company),
+                    ->description(fn (Client $record) => $record->company),
 
                 TextColumn::make('email')
                     ->searchable()

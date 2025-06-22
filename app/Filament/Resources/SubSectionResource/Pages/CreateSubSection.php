@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\SubSectionResource\Pages;
 
 use App\Filament\Resources\SubSectionResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSubSection extends CreateRecord

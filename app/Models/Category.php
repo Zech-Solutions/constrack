@@ -10,19 +10,22 @@ class Category extends Model
 {
     /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
+
     protected $fillable = [
-        "name",
-        "slug",
-        "description",
-        "is_active",
+        'name',
+        'slug',
+        'description',
+        'is_active',
     ];
+
     public function product()
     {
         return $this->hasMany(Product::class);
     }
+
     public function parent()
     {
-        return $this->belongsTo(Category::class, "parent_id");
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     /**

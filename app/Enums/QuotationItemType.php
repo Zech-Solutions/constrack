@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum QuotationItemType: string
 {
-    case MATERIAL = "material";
+    case MATERIAL = 'material';
 
-    case SUB_CATEGORY = "sub_category";
+    case SUB_CATEGORY = 'sub_category';
 
-    case PRELIMINARIES = "preliminaries";
+    case PRELIMINARIES = 'preliminaries';
 }

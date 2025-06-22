@@ -2,19 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\QuotationItemType;
 use App\Enums\QuotationStatus;
 use App\Enums\WorkType;
 use App\Filament\Resources\QuotationResource\Pages;
-use App\Filament\Resources\QuotationResource\RelationManagers;
 use App\Models\Quotation;
-use App\Models\Section as ModelsSection;
-use App\Models\SubSection;
 use App\Models\Work;
 use App\Models\WorkCategory;
 use Filament\Forms;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -26,10 +20,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-
 
 class QuotationResource extends Resource
 {
@@ -41,7 +31,7 @@ class QuotationResource extends Resource
     {
         return $form
             ->schema([
-                Section::make("Quotation Information")
+                Section::make('Quotation Information')
                     ->columns(4)
                     ->schema([
                         Select::make('client_id')
@@ -77,29 +67,30 @@ class QuotationResource extends Resource
                             ->columnSpanFull(),
                     ]),
 
-                Section::make("Preliminaries")
+                Section::make('Preliminaries')
                     ->schema([
                         Repeater::make('preliminaries')
                             ->schema([
                                 Select::make('work_id')
-                                    ->label("Scope")
+                                    ->label('Scope')
                                     ->searchable()
-                                    ->options(fn() => Work::optionsForSelect(WorkType::PRELIMINARIES))
+                                    ->options(fn () => Work::optionsForSelect(WorkType::PRELIMINARIES))
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
 
                                 Select::make('work_category_id')
-                                    ->label("Sub Category")
+                                    ->label('Sub Category')
                                     ->searchable()
                                     ->required()
                                     ->options(function (Get $get) {
                                         $work_id = $get('work_id');
+
                                         return WorkCategory::optionsForSelect($work_id);
                                     })
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                                 TextInput::make('total')
-                                    ->label("Amount")
+                                    ->label('Amount')
                                     ->required()
                                     ->numeric(),
                             ])
@@ -115,34 +106,35 @@ class QuotationResource extends Resource
                                         ];
                                     })
                                     ->toArray();
-                            })
+                            }),
                     ])
                     ->collapsible(),
-                Section::make("Scope of Works")
+                Section::make('Scope of Works')
                     ->schema([
                         Repeater::make('works')
-                            ->label("Main Works")
+                            ->label('Main Works')
                             ->schema([
                                 Select::make('work_id')
-                                    ->label("Scope")
+                                    ->label('Scope')
                                     ->searchable()
-                                    ->options(fn() => Work::optionsForSelect(WorkType::MAIN_SCOPE))
+                                    ->options(fn () => Work::optionsForSelect(WorkType::MAIN_SCOPE))
                                     ->live()
                                     ->required()
-                                    ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
+                                    ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
 
                                 Select::make('work_category_id')
-                                    ->label("Sub Category")
+                                    ->label('Sub Category')
                                     ->searchable()
                                     ->required()
                                     ->options(function (Get $get) {
                                         $work_id = $get('work_id');
+
                                         return WorkCategory::optionsForSelect($work_id);
                                     })
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                             ])
-                            ->columns(2)
-                    ])
+                            ->columns(2),
+                    ]),
             ]);
     }
 
@@ -166,8 +158,8 @@ class QuotationResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn($state) => $state->getLabel())
-                    ->color(fn($state) => $state->getColor()),
+                    ->formatStateUsing(fn ($state) => $state->getLabel())
+                    ->color(fn ($state) => $state->getColor()),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -182,7 +174,7 @@ class QuotationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => $record->status === QuotationStatus::DRAFT),
+                    ->visible(fn ($record) => $record->status === QuotationStatus::DRAFT),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
