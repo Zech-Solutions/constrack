@@ -21,16 +21,37 @@ class PreRegistrationResource extends Resource
 {
     protected static ?string $model = PreRegistration::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
 
     protected static bool $isScopedToTenant = false;
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('name')->required(),
-            Forms\Components\TextInput::make('email')->email()->required(),
-            Forms\Components\TextInput::make('contact_number'),
+            Forms\Components\Section::make('Pre Registered Information')
+                ->description('Required fields for tenant registration.')
+                ->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->label('Name')
+                        ->placeholder('Enter name')
+                        ->required()
+                        ->columnSpanFull(),
+
+                    Forms\Components\TextInput::make('email')
+                        ->label('Email Address')
+                        ->placeholder('example@email.com')
+                        ->email()
+                        ->required()
+                        ->unique(ignoreRecord: true)
+                        ->suffixIcon('heroicon-o-envelope'),
+
+                    Forms\Components\TextInput::make('contact_number')
+                        ->label('Contact Number')
+                        ->placeholder('09XXXXXXXXX')
+                        ->tel()
+                        ->suffixIcon('heroicon-o-phone'),
+                ])
+                ->columns(2)
         ]);
     }
 
