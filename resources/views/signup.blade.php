@@ -48,10 +48,20 @@
                                 class="w-full px-4 py-2 text-gray-900 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         </div>
 
+                        <!-- Domain Name -->
                         <div class="sm:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700">Preferred Domain Name</label>
-                            <input name="domain_name" type="text" required placeholder="e.g. mystore.getko.ph"
-                                class="w-full px-4 py-2 text-gray-900 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                            <label class="block text-sm font-medium text-gray-700">Preferred Domain</label>
+                            <div class="flex">
+                                <input name="domain_name" type="text" required pattern="^[a-zA-Z0-9\-]+$"
+                                    placeholder="yourstore"
+                                    class="w-full px-4 py-2 text-gray-900 bg-gray-100 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                                <span
+                                    class="inline-flex items-center px-4 text-sm text-gray-700 bg-gray-200 select-none rounded-r-md">
+                                    .constrack.com
+                                </span>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Only letters, numbers, and hyphens allowed. No spaces.
+                            </p>
                         </div>
 
                         <div>
