@@ -80,9 +80,10 @@ class PreRegistrationResource extends Resource
 
                         if (!$existingUser) {
                             $user = User::create([
-                                'name' => $record->name,
-                                'email' => $record->email,
-                                'password' => bcrypt('password'),
+                                'name' => $record->owner_email,
+                                'email' => $record->owner_email,
+                                'password' => bcrypt(strtoupper($record->owner_lastname) . date('Y', strtotime($record->created_at))),
+                                'role' => 'admin',
                             ]);
                         } else {
                             $user = $existingUser;
@@ -98,7 +99,7 @@ class PreRegistrationResource extends Resource
 
                         Notification::make()
                             ->title('Conversion successful')
-                            ->body('PreRegistration has been converted to a Tenant.')
+                            ->body($record->name . ' has been converted to a Tenant.')
                             ->success()
                             ->send();
                     }),

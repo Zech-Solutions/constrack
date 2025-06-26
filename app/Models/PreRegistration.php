@@ -12,7 +12,19 @@ class PreRegistration extends Model
 
     protected $table = 'preregistrations';
 
-    protected $fillable = ['name', 'email', 'contact_number'];
+    protected $fillable = [
+        'name',
+        'email',
+        'contact_number',
+        'domain_name',
+        'owner_firstname',
+        'owner_middlename',
+        'owner_lastname',
+        'owner_email',
+        'address',
+        'tenant_id',
+    ];
+
 
     public function tenant(): BelongsTo
     {
