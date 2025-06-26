@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\TenantManager\Resources;
 
-use App\Filament\Resources\PreRegistrationResource\Pages;
+use App\Filament\TenantManager\Resources\PreRegistrationResource\Pages;
 use App\Filament\Resources\PreRegistrationResource\RelationManagers;
 use App\Models\PreRegistration;
 use App\Models\Tenant;

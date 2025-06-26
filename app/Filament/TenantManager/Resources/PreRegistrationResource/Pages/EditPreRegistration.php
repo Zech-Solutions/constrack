@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\PreRegistrationResource\Pages;
+namespace App\Filament\TenantManager\Resources\PreRegistrationResource\Pages;
 
-use App\Filament\Resources\PreRegistrationResource;
+use App\Filament\TenantManager\Resources\PreRegistrationResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
