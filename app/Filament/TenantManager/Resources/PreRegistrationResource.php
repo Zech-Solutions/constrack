@@ -21,7 +21,7 @@ class PreRegistrationResource extends Resource
 {
     protected static ?string $model = PreRegistration::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
 
     protected static bool $isScopedToTenant = false;
 
