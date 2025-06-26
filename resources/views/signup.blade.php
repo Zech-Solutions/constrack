@@ -70,7 +70,7 @@
                                 class="w-full px-4 py-2 text-gray-900 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Owner Email</label>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
                             <input name="owner_email" type="email" required placeholder="owner@example.com"
                                 class="w-full px-4 py-2 text-gray-900 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                         </div>
