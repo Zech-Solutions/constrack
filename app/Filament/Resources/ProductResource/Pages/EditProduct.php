@@ -108,25 +108,16 @@ class EditProduct extends EditRecord
     {
         return Tab::make('Price History')
             ->schema([
-                View::make('components.supplier-price-history-header')
-                    ->viewData([
-                        'columns' => ['Supplier', 'Current Price', 'Previous Price', 'Date'],
-                    ]),
-
-
-
-
                 TableRepeater::make('supplierPricesHistory')
-                    // ->headers([
-                    //     Header::make('Supplier'),
-                    //     Header::make('Current Price'),
-                    //     Header::make('Previous Price'),
-                    //     Header::make('Date'),
-                    // ])
-                    ->renderHeader(false)
+                    ->headers([
+                        Header::make('Supplier'),
+                        Header::make('Current Price'),
+                        Header::make('Previous Price'),
+                        Header::make('Date'),
+                    ])
                     ->deletable(false)
                     ->relationship('supplierPricesHistory')
-                    // ->label('Prices from Suppliers')
+                    ->label('Prices from Suppliers')
                     ->disabled()
                     ->schema([
                         TextInput::make('supplier.name')
