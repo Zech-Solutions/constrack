@@ -9,6 +9,8 @@ use App\Filament\Resources\QuotationResource;
 use App\Models\Product;
 use App\Models\Work;
 use App\Models\WorkCategory;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 use Filament\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Actions as ComponentsActions;
@@ -159,23 +161,6 @@ class EditQuotation extends EditRecord
     public function getStepOverview()
     {
         return [
-            Section::make('Review Quotation')
-                ->description('Check the information before saving')
-                ->schema([
-                    TextInput::make('client_name')
-                        ->label('Client')
-                        ->default(fn () => $this->record?->client?->name)
-                        ->disabled(),
-                    TextInput::make('quotation_date')
-                        ->default(fn () => $this->record?->quotation_date)
-                        ->disabled(),
-                    TextInput::make('title')
-                        ->default(fn () => $this->record?->title)
-                        ->disabled(),
-                    Textarea::make('description')
-                        ->default(fn () => $this->record?->description)
-                        ->disabled(),
-                ]),
             Section::make('Cost Summary')
                 ->description('Overview of costs including VAT')
                 ->schema([
@@ -187,10 +172,12 @@ class EditQuotation extends EditRecord
                     TextInput::make('vat_cost')
                         ->label('VAT (12%)')
                         ->numeric()
+                        ->readOnly()
                         ->reactive(),
                     TextInput::make('total_cost')
                         ->label('Total Cost (VAT Included)')
                         ->numeric()
+                        ->readOnly()
                         ->reactive(),
                 ])
                 ->columns(3),
@@ -312,7 +299,15 @@ class EditQuotation extends EditRecord
                             fn (Get $get) => 'You have '.count($get('materials') ?? []).' material item(s).'
                         )
                         ->schema([
-                            Repeater::make('materials')
+                            TableRepeater::make('materials')
+                                ->headers([
+                                    Header::make('Material')
+                                        ->width('40%'),
+                                    Header::make('Quantity'),
+                                    Header::make('Cost'),
+                                    Header::make('Price'),
+                                    Header::make('Amount'),
+                                ])
                                 ->relationship(
                                     name: 'materials',
                                 )
@@ -369,15 +364,13 @@ class EditQuotation extends EditRecord
                                         ->label('Price')
                                         ->numeric()
                                         ->readOnly()
-                                        ->default(0)
-                                        ->helperText('Cost x Profit %'),
+                                        ->default(0),
 
                                     TextInput::make('amount')
                                         ->label('Amount')
                                         ->numeric()
                                         ->default(0)
-                                        ->readOnly()
-                                        ->helperText('Qty x Price'),
+                                        ->readOnly(),
                                 ])
                                 ->defaultItems(0)
                                 ->columns(6),

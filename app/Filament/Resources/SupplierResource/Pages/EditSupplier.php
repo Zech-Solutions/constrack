@@ -10,6 +10,11 @@ class EditSupplier extends EditRecord
 {
     protected static string $resource = SupplierResource::class;
 
+    public function mount($record): void
+    {
+        parent::mount($record);
+    }
+
     protected function getHeaderActions(): array
     {
         return [

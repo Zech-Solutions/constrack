@@ -19,6 +19,8 @@ class ProductCategoryResource extends Resource
 
     protected static ?string $cluster = ProductCluster::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
     public static function form(Form $form): Form
     {
         return $form

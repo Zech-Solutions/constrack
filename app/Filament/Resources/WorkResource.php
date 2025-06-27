@@ -22,6 +22,8 @@ class WorkResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+
     public static function getNavigationLabel(): string
     {
         return 'Main Category';

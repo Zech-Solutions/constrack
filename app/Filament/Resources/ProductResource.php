@@ -19,6 +19,8 @@ use Filament\Tables\Table;
 
 class ProductResource extends Resource
 {
+    protected static ?string $navigationIcon = 'heroicon-o-cube';
+
     protected static ?string $cluster = ProductCluster::class;
 
     protected static ?string $model = Product::class;

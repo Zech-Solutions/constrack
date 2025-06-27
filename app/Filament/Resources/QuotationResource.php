@@ -27,6 +27,8 @@ class QuotationResource extends Resource
 {
     protected static ?string $model = Quotation::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
     protected static ?string $cluster = ProjectManagementCluster::class;
 
     public static function form(Form $form): Form
