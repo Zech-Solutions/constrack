@@ -1,11 +1,11 @@
-import preset from '../../../../vendor/filament/filament/tailwind.config.preset'
+import preset from "../../../../vendor/filament/filament/tailwind.config.preset";
 
 export default {
     presets: [preset],
     content: [
-        './app/Filament/Clusters/ProductCluster/**/*.php',
-        './resources/views/filament/clusters/product-cluster/**/*.blade.php',
-        './vendor/filament/**/*.blade.php',
-        './vendor/awcodes/filament-table-repeater/resources/**/*.blade.php',
+        "./app/Filament/Clusters/ProductCluster/**/*.php",
+        "./resources/views/filament/clusters/product-cluster/**/*.blade.php",
+        "./vendor/filament/**/*.blade.php",
+        "./vendor/awcodes/filament-table-repeater/resources/**/*.blade.php",
     ],
-}
+};
