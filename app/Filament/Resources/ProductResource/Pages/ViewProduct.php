@@ -51,25 +51,21 @@ class ViewProduct extends ViewRecord
 
     public function tabSupplierPrices()
     {
+        $headerIndex = 0;
+
         return Tab::make('Supplier Prices')
             ->schema([
-                Grid::make()
-                    ->schema([
-                        TextEntry::make('header_supplier')->label('Supplier')->state(''),
-                        TextEntry::make('header_price')->label('Price')->state(''),
-                        TextEntry::make('header_date')->label('Date Adjusted')->state(''),
-                    ])
-                    ->columns(3)
-                    ->columnSpanFull(),
                 ...$this->record->supplierPrices()
                     ->latest()
                     ->get()
-                    ->map(function (SupplierProductPrice $price) {
+                    ->map(function (SupplierProductPrice $price) use (&$headerIndex) {
+                        $headerIndex++;
+
                         return Grid::make(['default' => 3])
                             ->schema([
-                                TextEntry::make('supplier')->state($price->supplier->name ?? '-')->label(false),
-                                TextEntry::make('price')->state('₱'.number_format($price->price, 2))->hiddenLabel(),
-                                TextEntry::make('date')->state($price->created_at->format('M d, Y H:i A'))->hiddenLabel(),
+                                TextEntry::make('supplier')->state($price->supplier->name ?? '-')->hiddenLabel($headerIndex > 1 ? true : false),
+                                TextEntry::make('price')->state('₱'.number_format($price->price, 2))->hiddenLabel($headerIndex > 1 ? true : false),
+                                TextEntry::make('date')->state($price->created_at->format('M d, Y H:i A'))->hiddenLabel($headerIndex > 1 ? true : false),
                             ])
                             ->extraAttributes(['class' => 'border-b dark:border-gray-700']);
                     })
@@ -81,27 +77,22 @@ class ViewProduct extends ViewRecord
 
     public function tabSupplierPriceHistory()
     {
+        $headerIndex = 0;
+
         return Tab::make('Price History')
             ->schema([
-                Grid::make()
-                    ->schema([
-                        TextEntry::make('header_supplier')->label('Supplier')->state(''),
-                        TextEntry::make('header_price')->label('Price')->state(''),
-                        TextEntry::make('header_previous_price')->label('Previous Price')->state(''),
-                        TextEntry::make('header_date')->label('Date Adjusted')->state(''),
-                    ])
-                    ->columns(4)
-                    ->columnSpanFull(),
                 ...$this->record->supplierPricesHistory()
                     ->latest()
                     ->get()
-                    ->map(function (SupplierProductPriceHistory $price) {
+                    ->map(function (SupplierProductPriceHistory $price) use (&$headerIndex) {
+                        $headerIndex++;
+
                         return Grid::make(['default' => 4])
                             ->schema([
-                                TextEntry::make('supplier')->state($price->supplier->name ?? '-')->label(false),
-                                TextEntry::make('price')->state('₱'.number_format($price->price, 2))->hiddenLabel(),
-                                TextEntry::make('previous_price')->state('₱'.number_format($price->previous_price, 2))->hiddenLabel(),
-                                TextEntry::make('created_at')->state($price->created_at->format('M d, Y H:i A'))->hiddenLabel(),
+                                TextEntry::make('supplier')->state($price->supplier->name ?? '-')->hiddenLabel($headerIndex > 1 ? true : false),
+                                TextEntry::make('price')->state('₱'.number_format($price->price, 2))->hiddenLabel($headerIndex > 1 ? true : false),
+                                TextEntry::make('previous_price')->state('₱'.number_format($price->previous_price, 2))->hiddenLabel($headerIndex > 1 ? true : false),
+                                TextEntry::make('created_at')->state($price->created_at->format('M d, Y H:i A'))->hiddenLabel($headerIndex > 1 ? true : false),
                             ])
                             ->extraAttributes(['class' => 'border-b dark:border-gray-700']);
                     })
