@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\UserResource as ResourcesUserResource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,6 +18,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class TenantManagerPanelProvider extends PanelProvider
 {
@@ -25,6 +29,8 @@ class TenantManagerPanelProvider extends PanelProvider
         return $panel
             ->id('tenantManager')
             ->path('admin-console')
+            ->authGuard('web')
+            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -39,6 +45,7 @@ class TenantManagerPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
+                'web',
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -51,6 +58,7 @@ class TenantManagerPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                'role:SUPERADMIN',
             ]);
     }
 }
