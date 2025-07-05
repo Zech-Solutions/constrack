@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\WorkType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Work extends Model
 {
@@ -21,6 +22,11 @@ class Work extends Model
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function workCategories(): HasMany
+    {
+        return $this->hasMany(WorkCategory::class);
     }
 
     public static function optionsForSelect($workType = null): array

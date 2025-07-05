@@ -69,18 +69,28 @@ class Tenant extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function sections(): HasMany
-    {
-        return $this->hasMany(Section::class);
-    }
-
-    public function subSections(): HasMany
-    {
-        return $this->hasMany(SubSection::class);
-    }
-
     public function quotations(): HasMany
     {
         return $this->hasMany(Quotation::class);
+    }
+
+    public function jobOrders(): HasMany
+    {
+        return $this->hasMany(JobOrder::class);
+    }
+
+    public function requisitions(): HasMany
+    {
+        return $this->hasMany(Requisition::class);
+    }
+
+    public function canvasses(): HasMany
+    {
+        return $this->hasMany(Canvass::class);
+    }
+
+    public function receivings(): HasMany
+    {
+        return $this->hasMany(Receiving::class);
     }
 }

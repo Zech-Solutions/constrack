@@ -2,17 +2,21 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\QuotationItemType;
 use App\Enums\SupplierType;
 use App\Filament\Clusters\ProjectManagementCluster;
 use App\Filament\Resources\JobOrderResource\Pages;
 use App\Models\JobOrder;
 use App\Models\Project;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -43,6 +47,13 @@ class JobOrderResource extends Resource
                             ->default(function () {
                                 return sprintf('PRJ-%s', Str::upper(Str::random(7)));
                             }),
+                        DatePicker::make('jo_date')
+                            ->label('Joborder Date')
+                            ->required(),
+                        DatePicker::make('start_date')
+                            ->required(),
+                        DatePicker::make('due_date')
+                            ->required(),
                         Select::make('client_id')
                             ->relationship('client', 'name')
                             ->searchable()
@@ -51,17 +62,25 @@ class JobOrderResource extends Resource
 
                         Select::make('project_id')
                             ->label('Project')
-                            ->relationship('project', 'name')
                             ->required()
                             ->preload()
                             ->searchable()
-                            ->columnSpan(2)
                             ->live()
                             ->options(function (Get $get) {
                                 $client_id = $get('client_id');
 
                                 return Project::optionsForSelect($client_id);
                             }),
+                        Select::make('quotation_id')
+                            ->relationship(
+                                name: 'quotation',
+                                modifyQueryUsing: fn (Builder $query, Get $get) => $query
+                                    ->where('project_id', $get('project_id'))
+                            )
+                            ->getOptionLabelFromRecordUsing(fn (Quotation $record) => "{$record->code}")
+                            ->required()
+                            ->preload()
+                            ->searchable(),
                         Select::make('supplier_id')
                             ->label('Subcontractor')
                             ->searchable()
@@ -71,17 +90,41 @@ class JobOrderResource extends Resource
                                 modifyQueryUsing: fn (Builder $query) => $query
                                     ->where('type', SupplierType::SUBCON)
                             )
+                            ->preload()
                             ->required(),
+                        Select::make('work_category_id')
+                            ->label('Scope of Work')
+                            ->options(function (Get $get) {
+                                return QuotationItem::options($get('quotation_id'));
+                            })
+                            ->getOptionLabelFromRecordUsing(fn (QuotationItem $record) => "{$record->workCategory->name}")
+                            ->required()
+                            ->preload()
+                            ->live()
+                            ->columnSpan(2)
+                            ->searchable()
+                            ->afterStateUpdated(function ($state, Get $get, Set $set) {
+                                $item = QuotationItem::query()
+                                    ->where('quotation_id', $get('quotation_id'))
+                                    ->where('work_category_id', $state)
+                                    ->where('type', QuotationItemType::SUB_CATEGORY)
+                                    ->first();
+
+                                if ($item) {
+                                    $set('labor', $item->labor_fee);
+                                    $set('amount', $item->total);
+                                }
+
+                            }),
+                        TextInput::make('labor')
+                            ->required()
+                            ->reactive()
+                            ->numeric(),
                         TextInput::make('amount')
+                            ->label('Billing Amount')
+                            ->reactive()
                             ->required()
                             ->numeric(),
-                        DatePicker::make('jo_date')
-                            ->label('Joborder Date')
-                            ->required(),
-                        DatePicker::make('start_date')
-                            ->required(),
-                        DatePicker::make('due_date')
-                            ->required(),
                     ]),
             ]);
     }

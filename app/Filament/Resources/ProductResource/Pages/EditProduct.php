@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
+use App\Enums\SupplierType;
 use App\Filament\Resources\ProductResource;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Builder;
 
 class EditProduct extends EditRecord
 {
@@ -84,7 +86,12 @@ class EditProduct extends EditRecord
                         ->label('Prices from Suppliers')
                         ->schema([
                             Select::make('supplier_id')
-                                ->relationship('supplier', 'name')
+                                ->relationship(
+                                    name: 'supplier',
+                                    titleAttribute: 'name',
+                                    modifyQueryUsing: fn (Builder $query) => $query
+                                        ->where('type', SupplierType::MATERIAL)
+                                )
                                 ->label('Supplier')
                                 ->required()
                                 ->searchable()

@@ -29,8 +29,18 @@ class JobOrder extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function quotation(): BelongsTo
+    {
+        return $this->belongsTo(Quotation::class);
+    }
+
     public function supplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class);
+    }
+
+    public function workCategory()
+    {
+        return $this->belongsTo(WorkCategory::class);
     }
 }

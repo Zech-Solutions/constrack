@@ -6,10 +6,10 @@ use App\Enums\QuotationStatus;
 use App\Enums\WorkType;
 use App\Filament\Clusters\ProjectManagementCluster;
 use App\Filament\Resources\QuotationResource\Pages;
-use App\Models\Project;
 use App\Models\Quotation;
 use App\Models\Work;
 use App\Models\WorkCategory;
+use App\Models\WorkPrice;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -38,36 +38,30 @@ class QuotationResource extends Resource
                 Section::make('Quotation Information')
                     ->columns(4)
                     ->schema([
+                        TextInput::make('code')
+                            ->unique(ignoreRecord: true)
+                            ->label('Quotation Code')
+                            ->maxLength(255)
+                            ->required()
+                            ->default(function () {
+                                return sprintf('BOQ-%s', now()->format('mdy'));
+                            }),
                         Select::make('client_id')
                             ->label('Clients')
                             ->relationship('client', 'name')
                             ->required()
                             ->preload()
                             ->searchable()
-                            ->columnSpan(2),
-                        Select::make('project_id')
-                            ->label('Project')
-                            ->relationship('project', 'name')
-                            ->required()
-                            ->preload()
-                            ->searchable()
                             ->columnSpan(2)
-                            ->live()
-                            ->options(function (Get $get) {
-                                $client_id = $get('client_id');
-
-                                return Project::optionsForSelect($client_id);
-                            })
-                            ->afterStateUpdated(function ($state, Set $set) {
-                                $project = Project::find($state);
-                                if ($project) {
-                                    $set('title', $project->name);
-                                    $set('description', $project->description);
+                            ->createOptionForm(
+                                function () {
+                                    return ClientResource::formSchema();
                                 }
-                            }),
+                            ),
                         Forms\Components\DatePicker::make('quotation_date')
                             ->required(),
                         Forms\Components\TextInput::make('term')
+                            ->label('Terms of Payment')
                             ->required()
                             ->numeric()
                             ->default(30),
@@ -76,6 +70,10 @@ class QuotationResource extends Resource
                             ->numeric()
                             ->default(12),
                         Forms\Components\TextInput::make('profit_percent')
+                            ->required()
+                            ->numeric()
+                            ->default(35),
+                        Forms\Components\TextInput::make('labor_percent')
                             ->required()
                             ->numeric()
                             ->default(35),
@@ -156,8 +154,18 @@ class QuotationResource extends Resource
                                         return WorkCategory::optionsForSelect($work_id);
                                     })
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                                Select::make('supplier_id')
+                                    ->label('Subcontractor')
+                                    ->searchable()
+                                    ->required()
+                                    ->options(function (Get $get) {
+                                        $work_category_id = $get('work_category_id');
+
+                                        return WorkPrice::supplierOptionsWithPrice($work_category_id);
+                                    })
+                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                             ])
-                            ->columns(2),
+                            ->columns(3),
                     ]),
             ]);
     }

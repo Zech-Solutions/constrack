@@ -31,6 +31,11 @@ class WorkCategory extends Model
         return $this->hasMany(CategoryMaterial::class)->orderBy('sequence');
     }
 
+    public function prices()
+    {
+        return $this->hasMany(WorkPrice::class)->orderBy('price');
+    }
+
     public function work(): BelongsTo
     {
         return $this->belongsTo(Work::class);
