@@ -14,23 +14,11 @@ return new class extends Migration
         Schema::create('quotation_items', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['material', 'sub_category', 'preliminaries'])->default('sub_category');
-            $table->foreignId('quotation_id')
-                ->constrained()
-                ->cascadeOnDelete();
-
-            $table->foreignId('work_id')
-                ->constrained()
-                ->cascadeOnDelete();
-
-            $table->foreignId('work_category_id')
-                ->constrained()
-                ->cascadeOnDelete();
-
-            $table->foreignId('product_id')
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete();
-
+            $table->foreignId('quotation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('work_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('work_category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('supplier_id')->nullable()->constrained()->nullOnDelete();
             $table->decimal('unit_cost', 12, 2)->default(0);
             $table->decimal('unit_price', 12, 2)->default(0);
             $table->decimal('quantity', 12, 2)->default(0);

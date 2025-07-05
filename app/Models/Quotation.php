@@ -19,6 +19,7 @@ class Quotation extends Model
         'term',
         'vat_percent',
         'profit_percent',
+        'labor_percent',
         'remarks',
         'completion',
         'direct_cost',
@@ -58,11 +59,6 @@ class Quotation extends Model
     public function works(): BelongsToMany
     {
         return $this->belongsToMany(Work::class);
-    }
-
-    public function sections(): BelongsToMany
-    {
-        return $this->belongsToMany(Section::class);
     }
 
     public function quotationItems()

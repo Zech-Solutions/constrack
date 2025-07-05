@@ -13,6 +13,7 @@ class QuotationItem extends Model
         'work_category_id',
         'parent_id',
         'product_id',
+        'supplier_id',
         'unit_cost',
         'unit_price',
         'amount',
@@ -49,5 +50,18 @@ class QuotationItem extends Model
     public function materials()
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public static function options($quotationId = null): array
+    {
+        return self::query()
+            ->where('quotation_id', $quotationId)
+            ->where('type', QuotationItemType::SUB_CATEGORY)
+            ->with('workCategory')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->work_category_id => $item->workCategory->name];
+            })
+            ->toArray();
     }
 }

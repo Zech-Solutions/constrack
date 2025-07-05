@@ -17,6 +17,7 @@ use Filament\Forms\Components\Actions as ComponentsActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
@@ -91,6 +92,18 @@ class EditQuotation extends EditRecord
                 ->required()
                 ->numeric()
                 ->default(30),
+            TextInput::make('vat_percent')
+                ->required()
+                ->numeric()
+                ->default(12),
+            TextInput::make('profit_percent')
+                ->required()
+                ->numeric()
+                ->default(35),
+            TextInput::make('labor_percent')
+                ->required()
+                ->numeric()
+                ->default(35),
             TextInput::make('title')
                 ->required()
                 ->maxLength(255)
@@ -99,9 +112,10 @@ class EditQuotation extends EditRecord
             Textarea::make('description')
                 ->autocomplete('off')
                 ->maxLength(255)
-                ->default(null),
-            Textarea::make('remarks'),
-            Textarea::make('completion'),
+                ->default(null)
+                ->columnSpanFull(),
+            RichEditor::make('remarks')
+                ->columnSpanFull(),
         ];
     }
 

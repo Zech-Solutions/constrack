@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('unit')->default('lot');
             $table->decimal('quantity', 12, 2)->default(1);
-            $table->decimal('amount', 12, 2)->default(0);
+            $table->decimal('amount', 12, 2)->nullable()->default(0);
             $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
