@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SupplierType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,10 +18,11 @@ class Supplier extends Model
         'phone',
         'tin',
         'address',
-        'city',
-        'state',
-        'postal_code',
-        'country',
+        'type',
+    ];
+
+    protected $casts = [
+        'type' => SupplierType::class,
     ];
 
     public function products()

@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\SupplierType;
 use App\Filament\Resources\SupplierResource\Pages;
 use App\Models\Supplier;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,21 +22,25 @@ class SupplierResource extends Resource
 
     protected static ?string $navigationGroup = 'Master Data';
 
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make('Basic Information')
-                    ->columns(2)
+                    ->columns(3)
                     ->schema([
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255)
-                            ->prefixIcon('heroicon-o-user'),
+                            ->prefixIcon('heroicon-o-user')
+                            ->columnSpan(2),
 
                         TextInput::make('email')
                             ->email()
-                            ->unique(table: 'clients', column: 'email', ignoreRecord: true)
+                            ->unique(table: 'suppliers', column: 'email', ignoreRecord: true)
+
                             ->prefixIcon('heroicon-o-envelope')
                             ->maxLength(255),
 
@@ -45,27 +52,15 @@ class SupplierResource extends Resource
                         TextInput::make('tin')
                             ->maxLength(20)
                             ->prefixIcon('heroicon-o-phone'),
-                    ]),
 
-                // Address Section
-                Section::make('Address Information')
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('address')
-                            ->columnSpanFull()
-                            ->prefixIcon('heroicon-o-map-pin'),
+                        Select::make('type')
+                            ->required()
+                            ->searchable()
+                            ->default(SupplierType::MATERIAL)
+                            ->options(SupplierType::getOptions()),
 
-                        TextInput::make('city')
-                            ->prefixIcon('heroicon-o-building-library'),
-
-                        TextInput::make('state')
-                            ->prefixIcon('heroicon-o-map'),
-
-                        TextInput::make('postal_code')
-                            ->prefixIcon('heroicon-o-document-text'),
-
-                        TextInput::make('country')
-                            ->prefixIcon('heroicon-o-flag'),
+                        Textarea::make('address')
+                            ->columnSpanFull(),
                     ]),
             ]);
     }
@@ -95,6 +90,11 @@ class SupplierResource extends Resource
                         ->searchable()
                         ->sortable()
                         ->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('type')
+                        ->label('Supplier Type')
+                        ->badge()
+                        ->formatStateUsing(fn ($state) => $state->getLabel())
+                        ->color(fn ($state) => $state->getColor()),
                 ]),
             ])
             ->filters([
@@ -124,7 +124,7 @@ class SupplierResource extends Resource
         return [
             'index' => Pages\ListSuppliers::route('/'),
             'create' => Pages\CreateSupplier::route('/create'),
-            // 'edit' => Pages\EditSupplier::route('/{record}/edit'),
+            'edit' => Pages\EditSupplier::route('/{record}/edit'),
         ];
     }
 }

@@ -20,13 +20,12 @@ return new class extends Migration
             $table->string('tin')->nullable();
 
             $table->enum('payment_type', ['CASH', 'CHARGE'])->default('CASH');
+
+            $table->enum('type', ['sub_contractor', 'material'])->default('material');
+
             $table->integer('payment_term')->default(30);
 
             $table->text('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('country')->nullable();
 
             $table->timestamps();
         });

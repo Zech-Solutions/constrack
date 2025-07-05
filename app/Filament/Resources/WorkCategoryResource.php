@@ -2,20 +2,25 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\SupplierType;
 use App\Filament\Clusters\ScopeOfWorkCluster;
 use App\Filament\Resources\WorkCategoryResource\Pages;
 use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\WorkCategory;
-use Filament\Forms\Components\Repeater;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class WorkCategoryResource extends Resource
 {
@@ -24,6 +29,8 @@ class WorkCategoryResource extends Resource
     protected static ?string $cluster = ScopeOfWorkCluster::class;
 
     protected static ?int $navigationSort = 2;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function getNavigationLabel(): string
     {
@@ -34,67 +41,118 @@ class WorkCategoryResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Work Category Information')
-                    ->columns(4)
+                Grid::make()
+                    ->columns(12)
                     ->schema([
-                        TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->columnSpanFull(),
-                        Select::make('work_id')
-                            ->label('Work Category')
-                            ->relationship('work', 'name')
-                            ->required()
-                            ->preload()
-                            ->searchable()
-                            ->columnSpanFull(),
-                        TextInput::make('description')
-                            ->maxLength(255)
-                            ->default(null)
-                            ->columnSpanFull(),
-                        TextInput::make('unit')
-                            ->maxLength(255)
-                            ->default('lot'),
-                        TextInput::make('quantity')
-                            ->numeric()
-                            ->default(1),
-                        TextInput::make('amount')
-                            ->numeric()
-                            ->default(null),
-                        Toggle::make('is_default')
-                            ->label('Set default for Quotation?')
-                            ->inline(false),
-                    ]),
-                Section::make('Attach Raw Materials (Main Scope)')
-                    ->schema([
-                        Repeater::make('materials')
-                            ->relationship()
-                            ->columns(3)
+                        Grid::make()
+                            ->columnSpan(5)
                             ->schema([
-                                Select::make('product_id')
-                                    ->label('Product')
-                                    ->searchable()
-                                    ->options(fn () => Product::optionsForSelect())
-                                    ->live()
-                                    ->required()
-                                    ->afterStateUpdated(function ($state, Set $set) {
-                                        if ($state) {
-                                            $product = Product::find($state);
-                                            $set('unit', $product?->unit ?? null);
-                                        } else {
-                                            $set('unit', null);
-                                        }
-                                    })
-                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
-                                TextInput::make('quantity')
-                                    ->numeric(),
-                                TextInput::make('unit')
-                                    ->readOnly()
-                                    ->dehydrated(false)
-                                    ->default(fn ($state) => $state),
-                            ])
-                            ->default([])
-                            ->minItems(0),
+
+                                Section::make('Work Category Information')
+                                    ->columns(2)
+                                    ->columnSpan(6)
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Select::make('work_id')
+                                            ->label('Work Category')
+                                            ->relationship('work', 'name')
+                                            ->required()
+                                            ->preload()
+                                            ->searchable()
+                                            ->columnSpanFull(),
+                                        TextInput::make('description')
+                                            ->maxLength(255)
+                                            ->default(null)
+                                            ->columnSpanFull(),
+                                        TextInput::make('unit')
+                                            ->maxLength(255)
+                                            ->default('lot'),
+                                        TextInput::make('quantity')
+                                            ->numeric()
+                                            ->default(1),
+                                        TextInput::make('amount')
+                                            ->numeric()
+                                            ->default(null),
+                                        Toggle::make('is_default')
+                                            ->label('Set default for Quotation?')
+                                            ->inline(false),
+                                    ]),
+
+                            ]),
+                        Grid::make()
+                            ->columns(6)
+                            ->columnSpan(7)
+                            ->schema([
+                                Section::make('Attach Raw Materials (Main Scope)')
+                                    ->description(
+                                        fn (Get $get) => 'You have '.count($get('materials') ?? []).' material item(s).'
+                                    )
+                                    ->collapsible(true)
+                                    ->columnSpan(6)
+                                    ->schema([
+                                        TableRepeater::make('materials')
+                                            ->headers([
+                                                Header::make('product'),
+                                                Header::make('quantity')->width('20%'),
+                                            ])
+                                            ->relationship()
+                                            ->schema([
+                                                Select::make('product_id')
+                                                    ->label('Product')
+                                                    ->searchable()
+                                                    ->relationship(
+                                                        name: 'product',
+                                                    )
+                                                    ->getOptionLabelFromRecordUsing(fn (Product $record) => "[{$record->unit}] - {$record->name}")
+                                                    ->live()
+                                                    ->required()
+                                                    ->preload()
+                                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                                                TextInput::make('quantity')
+                                                    ->numeric(),
+                                            ])
+                                            ->default([])
+                                            ->minItems(0),
+                                    ]),
+
+                                Section::make('Attach Sub Contractor Fee')
+                                    ->description(
+                                        fn (Get $get) => 'You have '.count($get('prices') ?? []).' subcontractor prices.'
+                                    )
+                                    ->collapsible(true)
+                                    ->columnSpan(6)
+                                    ->schema([
+                                        TableRepeater::make('prices')
+                                            ->headers([
+                                                Header::make('supplier'),
+                                                Header::make('price')->width('20%'),
+                                            ])
+                                            ->relationship()
+                                            ->schema([
+                                                Select::make('supplier_id')
+                                                    ->label('Supplier')
+                                                    ->searchable()
+                                                    ->relationship(
+                                                        name: 'supplier',
+                                                        modifyQueryUsing: fn (Builder $query) => $query
+                                                            ->where('type', SupplierType::SUBCON)
+                                                    )
+                                                    ->getOptionLabelFromRecordUsing(fn (Supplier $record) => "{$record->name}")
+                                                    ->live()
+                                                    ->required()
+                                                    ->preload()
+                                                    ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                                                TextInput::make('price')
+                                                    ->numeric(),
+                                            ])
+                                            ->default([])
+                                            ->minItems(0),
+                                    ]),
+
+                            ]),
                     ]),
             ]);
     }

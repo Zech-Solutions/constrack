@@ -15,12 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tenant_id');
             $table->foreignId('client_id')->references('id')->on('clients');
-            $table->foreignId('project_id')->references('id')->on('projects');
+            $table->foreignId('project_id')->nullable();
             $table->date('quotation_date');
             $table->string('code')->unique();
             $table->integer('term')->default(30);
             $table->decimal('vat_percent')->default(12);
             $table->decimal('profit_percent')->default(30);
+            $table->decimal('labor_percent')->default(40);
             $table->decimal('direct_cost', 12, 2)->default(0);
             $table->decimal('vat_cost', 12, 2)->default(0);
             $table->decimal('total_cost', 12, 2)->default(0);

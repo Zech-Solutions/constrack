@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductResource\Pages;
 
+use App\Enums\SupplierType;
 use App\Filament\Resources\ProductResource;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Builder;
 
 class EditProduct extends EditRecord
 {
@@ -33,7 +35,6 @@ class EditProduct extends EditRecord
                     ->tabs([
                         $this->tabBasicInfo(),
                         $this->tabSupplierPrices(),
-                        $this->tabSupplierPriceHistory(),
                     ]),
             ])
             ->columns('full');
@@ -81,12 +82,16 @@ class EditProduct extends EditRecord
                             Header::make('Supplier'),
                             Header::make('Price'),
                         ])
-                        ->renderHeader(false)
                         ->relationship('supplierPrices')
                         ->label('Prices from Suppliers')
                         ->schema([
                             Select::make('supplier_id')
-                                ->relationship('supplier', 'name')
+                                ->relationship(
+                                    name: 'supplier',
+                                    titleAttribute: 'name',
+                                    modifyQueryUsing: fn (Builder $query) => $query
+                                        ->where('type', SupplierType::MATERIAL)
+                                )
                                 ->label('Supplier')
                                 ->required()
                                 ->searchable()
@@ -101,45 +106,5 @@ class EditProduct extends EditRecord
                         ])
                         ->columnSpan('full'),
                 ]);
-    }
-
-    public function tabSupplierPriceHistory()
-    {
-        return Tab::make('Price History')
-            ->schema([
-                TableRepeater::make('supplierPricesHistory')
-                    ->headers([
-                        Header::make('Supplier'),
-                        Header::make('Current Price'),
-                        Header::make('Previous Price'),
-                        Header::make('Date'),
-                    ])
-                    ->deletable(false)
-                    ->relationship('supplierPricesHistory')
-                    ->label('Prices from Suppliers')
-                    ->disabled()
-                    ->schema([
-                        TextInput::make('supplier.name')
-                            ->label('Supplier')
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->default(fn ($state, $record) => $record->supplier?->name ?? '-'),
-                        TextInput::make('price')
-                            ->label('Current Price')
-                            ->numeric()
-                            ->prefix('₱')
-                            ->disabled(),
-                        TextInput::make('previous_price')
-                            ->label('Current Price')
-                            ->numeric()
-                            ->prefix('₱')
-                            ->disabled(),
-                        TextInput::make('date')
-                            ->label('Date Adjusted')
-                            ->prefixIcon('heroicon-m-calendar')
-                            ->disabled(),
-                    ])
-                    ->columnSpan('full'),
-            ]);
     }
 }

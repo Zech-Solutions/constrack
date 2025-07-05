@@ -9,12 +9,15 @@ use App\Filament\Resources\QuotationResource;
 use App\Models\Product;
 use App\Models\Work;
 use App\Models\WorkCategory;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 use Filament\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Actions as ComponentsActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
@@ -89,6 +92,18 @@ class EditQuotation extends EditRecord
                 ->required()
                 ->numeric()
                 ->default(30),
+            TextInput::make('vat_percent')
+                ->required()
+                ->numeric()
+                ->default(12),
+            TextInput::make('profit_percent')
+                ->required()
+                ->numeric()
+                ->default(35),
+            TextInput::make('labor_percent')
+                ->required()
+                ->numeric()
+                ->default(35),
             TextInput::make('title')
                 ->required()
                 ->maxLength(255)
@@ -97,9 +112,10 @@ class EditQuotation extends EditRecord
             Textarea::make('description')
                 ->autocomplete('off')
                 ->maxLength(255)
-                ->default(null),
-            Textarea::make('remarks'),
-            Textarea::make('completion'),
+                ->default(null)
+                ->columnSpanFull(),
+            RichEditor::make('remarks')
+                ->columnSpanFull(),
         ];
     }
 
@@ -159,23 +175,6 @@ class EditQuotation extends EditRecord
     public function getStepOverview()
     {
         return [
-            Section::make('Review Quotation')
-                ->description('Check the information before saving')
-                ->schema([
-                    TextInput::make('client_name')
-                        ->label('Client')
-                        ->default(fn () => $this->record?->client?->name)
-                        ->disabled(),
-                    TextInput::make('quotation_date')
-                        ->default(fn () => $this->record?->quotation_date)
-                        ->disabled(),
-                    TextInput::make('title')
-                        ->default(fn () => $this->record?->title)
-                        ->disabled(),
-                    Textarea::make('description')
-                        ->default(fn () => $this->record?->description)
-                        ->disabled(),
-                ]),
             Section::make('Cost Summary')
                 ->description('Overview of costs including VAT')
                 ->schema([
@@ -187,10 +186,12 @@ class EditQuotation extends EditRecord
                     TextInput::make('vat_cost')
                         ->label('VAT (12%)')
                         ->numeric()
+                        ->readOnly()
                         ->reactive(),
                     TextInput::make('total_cost')
                         ->label('Total Cost (VAT Included)')
                         ->numeric()
+                        ->readOnly()
                         ->reactive(),
                 ])
                 ->columns(3),
@@ -312,7 +313,15 @@ class EditQuotation extends EditRecord
                             fn (Get $get) => 'You have '.count($get('materials') ?? []).' material item(s).'
                         )
                         ->schema([
-                            Repeater::make('materials')
+                            TableRepeater::make('materials')
+                                ->headers([
+                                    Header::make('Material')
+                                        ->width('40%'),
+                                    Header::make('Quantity'),
+                                    Header::make('Cost'),
+                                    Header::make('Price'),
+                                    Header::make('Amount'),
+                                ])
                                 ->relationship(
                                     name: 'materials',
                                 )
@@ -369,15 +378,13 @@ class EditQuotation extends EditRecord
                                         ->label('Price')
                                         ->numeric()
                                         ->readOnly()
-                                        ->default(0)
-                                        ->helperText('Cost x Profit %'),
+                                        ->default(0),
 
                                     TextInput::make('amount')
                                         ->label('Amount')
                                         ->numeric()
                                         ->default(0)
-                                        ->readOnly()
-                                        ->helperText('Qty x Price'),
+                                        ->readOnly(),
                                 ])
                                 ->defaultItems(0)
                                 ->columns(6),
