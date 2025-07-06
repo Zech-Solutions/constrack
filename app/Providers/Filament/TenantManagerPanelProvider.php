@@ -25,6 +25,8 @@ class TenantManagerPanelProvider extends PanelProvider
         return $panel
             ->id('tenantManager')
             ->path('admin-console')
+            ->authGuard('web')
+            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -39,6 +41,7 @@ class TenantManagerPanelProvider extends PanelProvider
                 Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
+                'web',
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -51,6 +54,7 @@ class TenantManagerPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                'role:SUPERADMIN',
             ]);
     }
 }

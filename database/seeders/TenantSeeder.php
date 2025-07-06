@@ -13,19 +13,18 @@ class TenantSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'name' => 'Warren G. Munez',
-            'email' => 'admin@gmail.com',
-            'role' => 'admin',
-            'password' => bcrypt('admin'),
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Warren G. Munez',
+                'password' => bcrypt('admin'),
+            ]
+        )->assignRole('TENANT_ADMIN');
 
-        $tenant = Tenant::create([
+        Tenant::firstOrCreate([
             'name' => 'YWB ENGINEERING & CONSTRUCTION SERVICES',
             'email' => 'ywbecs@gmail.com',
             'contact' => '(+63)9072786893/ (+63)9274905001',
-        ]);
-
-        $tenant->users()->attach($user);
+        ])->users()->syncWithoutDetaching([$user->id]);
     }
 }

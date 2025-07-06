@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->authGuard('web')
             ->login()
             ->brandName(false)
             ->colors([
@@ -45,6 +46,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
             ])
             ->middleware([
+                'web',
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
@@ -58,6 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ->tenant(Tenant::class)
             ->authMiddleware([
                 Authenticate::class,
+                'role:TENANT_ADMIN|USER',
             ])
             ->topNavigation();
     }
@@ -65,6 +68,6 @@ class AdminPanelProvider extends PanelProvider
     public function register(): void
     {
         parent::register();
-        FilamentView::registerRenderHook('panels::body.end', fn(): string => Blade::render("@vite('resources/js/app.js')"));
+        FilamentView::registerRenderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"));
     }
 }
