@@ -26,6 +26,14 @@ class UserResource extends Resource
 
     protected static bool $isScopedToTenant = false;
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $tenant = Filament::getTenant(); // Current tenant
+
+        return parent::getEloquentQuery()
+            ->whereHas('teams', fn($query) => $query->where('tenants.id', $tenant?->getKey()));
+    }
+
     public static function form(Form $form): Form
     {
         return $form
