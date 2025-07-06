@@ -3,7 +3,6 @@
 namespace App\Filament\TenantManager\Resources\PreRegistrationResource\Pages;
 
 use App\Filament\TenantManager\Resources\PreRegistrationResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePreRegistration extends CreateRecord

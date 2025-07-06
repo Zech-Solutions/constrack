@@ -3,19 +3,16 @@
 namespace App\Filament\TenantManager\Resources;
 
 use App\Filament\TenantManager\Resources\PreRegistrationResource\Pages;
-use App\Filament\Resources\PreRegistrationResource\RelationManagers;
 use App\Models\PreRegistration;
 use App\Models\Tenant;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Tables\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PreRegistrationResource extends Resource
 {
@@ -51,7 +48,7 @@ class PreRegistrationResource extends Resource
                         ->tel()
                         ->suffixIcon('heroicon-o-phone'),
                 ])
-                ->columns(2)
+                ->columns(2),
         ]);
     }
 
@@ -78,11 +75,11 @@ class PreRegistrationResource extends Resource
 
                         $existingUser = User::where('email', $record->email)->first();
 
-                        if (!$existingUser) {
+                        if (! $existingUser) {
                             $user = User::create([
                                 'name' => $record->owner_email,
                                 'email' => $record->owner_email,
-                                'password' => bcrypt(strtoupper($record->owner_lastname) . date('Y', strtotime($record->created_at))),
+                                'password' => bcrypt(strtoupper($record->owner_lastname).date('Y', strtotime($record->created_at))),
                                 'role' => 'admin',
                             ]);
                         } else {
@@ -99,7 +96,7 @@ class PreRegistrationResource extends Resource
 
                         Notification::make()
                             ->title('Conversion successful')
-                            ->body($record->name . ' has been converted to a Tenant.')
+                            ->body($record->name.' has been converted to a Tenant.')
                             ->success()
                             ->send();
                     }),

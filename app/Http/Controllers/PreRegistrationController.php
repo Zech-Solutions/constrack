@@ -26,6 +26,7 @@ class PreRegistrationController extends Controller
 
         return back()->with('success', 'Thank you for signing up!');
     }
+
     public function show()
     {
         return view('signup');

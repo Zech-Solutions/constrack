@@ -31,7 +31,7 @@ class UserResource extends Resource
         $tenant = Filament::getTenant(); // Current tenant
 
         return parent::getEloquentQuery()
-            ->whereHas('teams', fn($query) => $query->where('tenants.id', $tenant?->getKey()));
+            ->whereHas('teams', fn ($query) => $query->where('tenants.id', $tenant?->getKey()));
     }
 
     public static function form(Form $form): Form
@@ -48,8 +48,8 @@ class UserResource extends Resource
                 TextInput::make('password')
                     ->password()
                     ->maxLength(255)
-                    ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null)
-                    ->required(fn(string $context) => $context === 'create')
+                    ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                    ->required(fn (string $context) => $context === 'create')
                     ->label('Password'),
                 Select::make('roles')
                     ->label('Roles')
@@ -57,10 +57,9 @@ class UserResource extends Resource
                     ->options(Role::where('name', '!=', 'SUPERADMIN')->pluck('name', 'name'))
                     ->multiple()
                     ->preload()
-                    ->required()
+                    ->required(),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {

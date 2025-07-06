@@ -25,7 +25,6 @@ class PreRegistration extends Model
         'tenant_id',
     ];
 
-
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
