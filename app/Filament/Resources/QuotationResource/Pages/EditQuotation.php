@@ -32,6 +32,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\HtmlString;
 
 class EditQuotation extends EditRecord
 {
@@ -47,6 +48,11 @@ class EditQuotation extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('saveDraft')
+                ->label('Save Draft')
+                ->color('secondary')
+                ->icon('heroicon-m-document-arrow-down')
+                ->action(fn() => $this->setStatus(QuotationStatus::DRAFT)),
             Actions\DeleteAction::make(),
         ];
     }
@@ -71,9 +77,9 @@ class EditQuotation extends EditRecord
                         ->schema($this->getStepMainWorks())
                         ->columns(3),
                     Step::make('Overview')
-                        ->schema($this->getStepOverview()),
+                        ->schema($this->getStepOverview())
                 ])
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
             ]);
     }
 
@@ -128,17 +134,17 @@ class EditQuotation extends EditRecord
                         ->label(false)
                         ->relationship(
                             name: 'quotationItems',
-                            modifyQueryUsing: fn (Builder $query) => $query
+                            modifyQueryUsing: fn(Builder $query) => $query
                                 ->where('type', QuotationItemType::PRELIMINARIES)
                         )
                         ->schema([
                             Select::make('work_id')
                                 ->label('Scope')
                                 ->searchable()
-                                ->options(fn () => Work::optionsForSelect(WorkType::PRELIMINARIES))
+                                ->options(fn() => Work::optionsForSelect(WorkType::PRELIMINARIES))
                                 ->live()
                                 ->required()
-                                ->afterStateUpdated(fn (Set $set) => $set('work_category_id', null)),
+                                ->afterStateUpdated(fn(Set $set) => $set('work_category_id', null)),
 
                             Select::make('work_category_id')
                                 ->label('Sub Category')
@@ -156,7 +162,7 @@ class EditQuotation extends EditRecord
                                 ->numeric()
                                 ->reactive()
                                 ->debounce(1000)
-                                ->afterStateUpdated(fn () => $this->calculateDirectCost()),
+                                ->afterStateUpdated(fn() => $this->calculateDirectCost()),
                         ])
                         ->columns(3),
                 ]),
@@ -195,21 +201,12 @@ class EditQuotation extends EditRecord
                         ->reactive(),
                 ])
                 ->columns(3),
-
             ComponentsActions::make([
-                Action::make('saveAsDraft')
-                    ->label('Save as Draft')
-                    ->color('danger')
-                    ->icon('heroicon-m-sparkles')
-                    ->outlined()
-                    ->action(fn () => $this->setStatus(QuotationStatus::DRAFT)),
-
                 Action::make('finish')
                     ->label('Finish')
                     ->color('primary')
-                    ->icon('heroicon-m-sparkles')
                     ->outlined()
-                    ->action(fn () => $this->setStatus(QuotationStatus::PENDING)),
+                    ->action(fn() => $this->setStatus(QuotationStatus::PENDING)),
             ])
                 ->alignEnd(),
         ];
@@ -247,7 +244,7 @@ class EditQuotation extends EditRecord
 
             $tabs[] = Tab::make($tabname)
                 ->badge(
-                    fn (Get $get) => count($get("items_{$work_id}") ?? [])
+                    fn(Get $get) => count($get("items_{$work_id}") ?? [])
                 )->schema([
                     ...$this->getTabCategory($work_id),
                 ]);
@@ -262,14 +259,14 @@ class EditQuotation extends EditRecord
 
         $profitPercent = $record->profit_percent;
 
-        Log::debug('Section id: '.$workId);
+        Log::debug('Section id: ' . $workId);
 
         return [
             Repeater::make("items_{$workId}")
                 ->label(false)
                 ->relationship(
                     name: 'quotationItems',
-                    modifyQueryUsing: fn (Builder $query) => $query
+                    modifyQueryUsing: fn(Builder $query) => $query
                         ->where('work_id', $workId)
                         ->where('type', QuotationItemType::SUB_CATEGORY)
                 )
@@ -279,17 +276,17 @@ class EditQuotation extends EditRecord
                     Select::make('work_category_id')
                         ->label('Category')
                         ->searchable()
-                        ->options(fn () => WorkCategory::optionsForSelect($workId))
+                        ->options(fn() => WorkCategory::optionsForSelect($workId))
                         ->columnSpan(2)
                         ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                         ->reactive()
-                        ->afterStateUpdated(fn ($state, Set $set) => $set('work_category_id', $state)),
+                        ->afterStateUpdated(fn($state, Set $set) => $set('work_category_id', $state)),
                     TextInput::make('quantity')
                         ->numeric()
                         ->reactive()
                         ->debounce(1000)
                         ->default(1)
-                        ->afterStateUpdated(fn () => $this->calculateDirectCost()),
+                        ->afterStateUpdated(fn() => $this->calculateDirectCost()),
                     Hidden::make('unit_cost')
                         ->default(0),
                     TextInput::make('unit_price')
@@ -302,7 +299,7 @@ class EditQuotation extends EditRecord
                         ->numeric()
                         ->reactive()
                         ->debounce(1000)
-                        ->afterStateUpdated(fn () => $this->calculateDirectCost()),
+                        ->afterStateUpdated(fn() => $this->calculateDirectCost()),
                     TextInput::make('total')
                         ->label('Total Amount')
                         ->readOnly()
@@ -310,7 +307,7 @@ class EditQuotation extends EditRecord
 
                     Section::make('Materials')
                         ->description(
-                            fn (Get $get) => 'You have '.count($get('materials') ?? []).' material item(s).'
+                            fn(Get $get) => 'You have ' . count($get('materials') ?? []) . ' material item(s).'
                         )
                         ->schema([
                             TableRepeater::make('materials')
@@ -343,7 +340,7 @@ class EditQuotation extends EditRecord
                                     Select::make('product_id')
                                         ->label('Materials')
                                         ->searchable()
-                                        ->options(fn () => Product::optionsForSelect())
+                                        ->options(fn() => Product::optionsForSelect())
                                         ->columnSpan(2)
                                         ->required()
                                         ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
@@ -411,7 +408,7 @@ class EditQuotation extends EditRecord
         $total = 0;
         $workCategories = $this->data[$itemWork];
         foreach ($workCategories as $workCategoryId => $workCategory) {
-            $materialCost = collect($workCategory['materials'])->sum(fn ($item) => ($item['amount'] ?? 0));
+            $materialCost = collect($workCategory['materials'])->sum(fn($item) => ($item['amount'] ?? 0));
             $workCategory['unit_cost'] = $materialCost;
             $workCategory['unit_price'] = $materialCost;
             $workCategory['total'] = ($workCategory['unit_price'] * $workCategory['quantity']) + $workCategory['labor_fee'];
@@ -425,7 +422,7 @@ class EditQuotation extends EditRecord
 
     public function calculateMainWorks()
     {
-        $mainWorks = array_filter(array_keys($this->data), fn ($key) => str_starts_with($key, 'items_'));
+        $mainWorks = array_filter(array_keys($this->data), fn($key) => str_starts_with($key, 'items_'));
         $total = 0;
         foreach ($mainWorks as $mainWorks) {
             $total += $this->calculateWorksTotal($mainWorks);
@@ -454,14 +451,14 @@ class EditQuotation extends EditRecord
     public function calculatePreliminariesSum()
     {
         return collect($this->data['preliminaries'])
-            ->sum(fn ($item) => ($item['total'] ?? 0));
+            ->sum(fn($item) => ($item['total'] ?? 0));
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
 
         $action = request()->input('action');
-        Log::debug('status: '.$action);
+        Log::debug('status: ' . $action);
 
         if ($action === 'finish') {
             $data['status'] = 'PENDNG';

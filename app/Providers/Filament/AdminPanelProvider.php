@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName("Constrack")
             ->colors([
                 'primary' => '#4c5c96',
+                'secondary' => '#6B7280'
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

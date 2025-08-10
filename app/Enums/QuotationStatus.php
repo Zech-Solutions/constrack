@@ -12,6 +12,8 @@ enum QuotationStatus: string
 
     case DECLINED = 'DECLINED';
 
+    case REJECTED = 'REJECTED';
+
     public function getLabel(): string
     {
         return match ($this) {
@@ -19,6 +21,7 @@ enum QuotationStatus: string
             self::PENDING => 'Pending',
             self::APPROVED => 'Approved',
             self::DECLINED => 'Declined',
+            self::REJECTED => 'Rejected',
         };
     }
 
@@ -29,6 +32,7 @@ enum QuotationStatus: string
             self::PENDING => 'warning',
             self::APPROVED => 'success',
             self::DECLINED => 'danger',
+            self::REJECTED => 'danger',
         };
     }
 }
