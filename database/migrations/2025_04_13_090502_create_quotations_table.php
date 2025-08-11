@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->text('remarks')->nullable();
             $table->text('completion')->nullable();
+            $table->string('filename')->nullable();
             $table->enum('status', ['DRAFT', 'PENDING', 'APPROVED', 'DECLINED'])->default('DRAFT');
             $table->timestamps();
         });

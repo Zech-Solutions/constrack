@@ -30,10 +30,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->authGuard('web')
             ->login()
-            ->brandName("Constrack")
+            ->brandName('Constrack')
             ->colors([
                 'primary' => '#4c5c96',
-                'secondary' => '#6B7280'
+                'secondary' => '#6B7280',
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -60,7 +60,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->tenant(Tenant::class)
             ->tenantMiddleware([
-                \Hasnayeen\Themes\Http\Middleware\SetTheme::class
+                \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
@@ -73,6 +73,6 @@ class AdminPanelProvider extends PanelProvider
     public function register(): void
     {
         parent::register();
-        FilamentView::registerRenderHook('panels::body.end', fn(): string => Blade::render("@vite('resources/js/app.js')"));
+        FilamentView::registerRenderHook('panels::body.end', fn (): string => Blade::render("@vite('resources/js/app.js')"));
     }
 }

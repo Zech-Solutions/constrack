@@ -207,6 +207,12 @@ class QuotationResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(fn ($record) => $record->status === QuotationStatus::DRAFT),
+                Tables\Actions\Action::make('download')
+                    ->icon('heroicon-s-cloud-arrow-down')
+                    ->visible(fn (Quotation $record): bool => ! is_null($record->filename))
+                    ->action(function (Quotation $record) {
+                        return response()->download(storage_path('app/public/quotations/').$record->filename);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

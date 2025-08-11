@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\QuotationStatus;
+use App\Jobs\GenerateQuotation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -26,6 +27,7 @@ class Quotation extends Model
         'vat_cost',
         'total_cost',
         'status',
+        'filename',
     ];
 
     protected $casts = [
@@ -34,10 +36,10 @@ class Quotation extends Model
 
     protected static function booted()
     {
-        static::creating(function ($quotation) {
-            $lastNumber = self::max('id') ?? 0;
-            $nextNumber = str_pad($lastNumber + 1, 6, '0', STR_PAD_LEFT);
-            $quotation->code = 'BOQ-'.$nextNumber;
+        static::updated(function (Quotation $quotation) {
+            if ($quotation->status === QuotationStatus::PENDING) {
+                GenerateQuotation::dispatch($quotation);
+            }
         });
     }
 

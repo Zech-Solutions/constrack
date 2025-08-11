@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quotation;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
 use Barryvdh\DomPDF\Facade\Pdf;
-
 
 class QuotationController extends Controller
 {
@@ -26,6 +23,6 @@ class QuotationController extends Controller
 
         // $pdf = Pdf::loadView('quotations.quotation',  compact('quotation' , 'logo'));
         // return $pdf->download('invoice.pdf');
-        return view("quotations.quotation", compact('quotation', 'logo'));
+        return view('quotations.quotation', compact('quotation', 'logo'));
     }
 }

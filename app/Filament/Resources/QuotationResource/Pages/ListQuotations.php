@@ -10,7 +10,6 @@ use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 
-
 class ListQuotations extends ListRecords
 {
     protected static string $resource = QuotationResource::class;
@@ -28,16 +27,16 @@ class ListQuotations extends ListRecords
             'all' => Tab::make()
                 ->badge(Quotation::count()),
             'draft' => Tab::make()
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', QuotationStatus::DRAFT))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', QuotationStatus::DRAFT))
                 ->badge(Quotation::where('status', QuotationStatus::DRAFT)->count()),
             'pending' => Tab::make()
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', QuotationStatus::PENDING))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', QuotationStatus::PENDING))
                 ->badge(Quotation::where('status', QuotationStatus::PENDING)->count()),
             'approved' => Tab::make()
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', QuotationStatus::APPROVED))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', QuotationStatus::APPROVED))
                 ->badge(Quotation::where('status', QuotationStatus::APPROVED)->count()),
             'rejected' => Tab::make()
-                ->modifyQueryUsing(fn(Builder $query) => $query->where('status', QuotationStatus::APPROVED))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', QuotationStatus::APPROVED))
                 ->badge(Quotation::where('status', QuotationStatus::APPROVED)->count()),
         ];
     }
