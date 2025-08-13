@@ -2,37 +2,36 @@
 
 namespace App\Enums;
 
-enum QuotationStatus: string
+use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasLabel;
+
+enum QuotationStatus: string implements HasColor, HasLabel
 {
-    case DRAFT = 'DRAFT';
-
-    case PENDING = 'PENDING';
-
-    case APPROVED = 'APPROVED';
-
-    case DECLINED = 'DECLINED';
-
-    case REJECTED = 'REJECTED';
+    case Draft = 'draft';
+    case Pending = 'pending';
+    case Reviewed = 'reviewed';
+    case Accepted = 'accepted';
+    case Declined = 'declined';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::DRAFT => 'Draft',
-            self::PENDING => 'Pending',
-            self::APPROVED => 'Approved',
-            self::DECLINED => 'Declined',
-            self::REJECTED => 'Rejected',
+            self::Draft => 'Draft',
+            self::Pending => 'Pending',
+            self::Reviewed => 'Reviewed',
+            self::Accepted => 'Accepted',
+            self::Declined => 'Declined',
         };
     }
 
-    public function getColor(): string
+    public function getColor(): string|array|null
     {
         return match ($this) {
-            self::DRAFT => 'gray',
-            self::PENDING => 'warning',
-            self::APPROVED => 'success',
-            self::DECLINED => 'danger',
-            self::REJECTED => 'danger',
+            self::Draft => 'gray',
+            self::Pending => 'warning',
+            self::Reviewed => 'info',
+            self::Accepted => 'success',
+            self::Declined => 'danger',
         };
     }
 }

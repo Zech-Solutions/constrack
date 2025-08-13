@@ -2,20 +2,34 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Project extends Model
 {
     protected $fillable = [
-        'code',
-        'name',
-        'description',
+        'tenant_id',
         'client_id',
-        'contact_person',
-        'contact_designation',
+        'quotation_id',
+        'code',
+        'title',
+        'description',
+        'client_po_date',
         'start_date',
         'due_date',
+        'completed_date',
+        'vat_cost',
+        'direct_cost',
+        'total_cost',
+        'client_attachments',
+        'remarks',
+        'status',
+    ];
+
+    protected $casts = [
+        'client_attachments' => 'array',
+        'status' => ProjectStatus::class,
     ];
 
     public function tenant(): BelongsTo

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\QuotationStatus;
-use App\Jobs\GenerateQuotation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Quotation extends Model
 {
     protected $fillable = [
+        'code',
         'tenant_id',
         'client_id',
         'project_id',
@@ -33,15 +33,6 @@ class Quotation extends Model
     protected $casts = [
         'status' => QuotationStatus::class,
     ];
-
-    protected static function booted()
-    {
-        static::updated(function (Quotation $quotation) {
-            if ($quotation->status === QuotationStatus::PENDING) {
-                GenerateQuotation::dispatch($quotation);
-            }
-        });
-    }
 
     public function tenant(): BelongsTo
     {

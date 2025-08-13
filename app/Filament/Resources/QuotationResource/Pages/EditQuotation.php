@@ -5,6 +5,7 @@ namespace App\Filament\Resources\QuotationResource\Pages;
 use App\Enums\QuotationItemType;
 use App\Enums\QuotationStatus;
 use App\Enums\WorkType;
+use App\Filament\Actions\FinishQuotationAction;
 use App\Filament\Resources\QuotationResource;
 use App\Models\Product;
 use App\Models\Work;
@@ -12,12 +13,9 @@ use App\Models\WorkCategory;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Filament\Actions;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Actions as ComponentsActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
@@ -51,7 +49,8 @@ class EditQuotation extends EditRecord
                 ->label('Save Draft')
                 ->color('secondary')
                 ->icon('heroicon-m-document-arrow-down')
-                ->action(fn () => $this->setStatus(QuotationStatus::DRAFT)),
+                ->action(fn () => $this->setStatus(QuotationStatus::Draft)),
+            FinishQuotationAction::make(),
             Actions\DeleteAction::make(),
         ];
     }
@@ -118,8 +117,6 @@ class EditQuotation extends EditRecord
                 ->autocomplete('off')
                 ->maxLength(255)
                 ->default(null)
-                ->columnSpanFull(),
-            RichEditor::make('remarks')
                 ->columnSpanFull(),
         ];
     }
@@ -199,14 +196,6 @@ class EditQuotation extends EditRecord
                         ->reactive(),
                 ])
                 ->columns(3),
-            ComponentsActions::make([
-                Action::make('finish')
-                    ->label('Finish')
-                    ->color('primary')
-                    ->outlined()
-                    ->action(fn () => $this->setStatus(QuotationStatus::PENDING)),
-            ])
-                ->alignEnd(),
         ];
     }
 
@@ -215,7 +204,7 @@ class EditQuotation extends EditRecord
         $this->record->status = $status->value;
         $this->save();
 
-        if ($status === QuotationStatus::PENDING) {
+        if ($status === QuotationStatus::Pending) {
             $this->redirect(QuotationResource::getUrl('view', ['record' => $this->record]));
         }
     }

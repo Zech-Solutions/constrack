@@ -15,15 +15,20 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tenant_id');
             $table->foreignId('client_id')->references('id')->on('clients');
+            $table->foreignId('quotation_id')->references('id')->on('quotations');
             $table->string('code')->unique()->nullable();
-            $table->string('name');
+            $table->string('title');
             $table->text('description')->nullable();
-            $table->string('contact_person')->nullable();
-            $table->string('contact_designation')->nullable();
+            $table->date('client_po_date')->nullable();
             $table->date('start_date')->nullable();
             $table->date('due_date')->nullable();
             $table->date('completed_date')->nullable();
-            $table->enum('status', ['PLANNING', 'FOR-APPROVAL', 'APPROVED', 'IN-PROGRESS', 'ON-HOLD', 'DELAYED', 'COMPLETED', 'CLOSED', 'CANCELLED'])->default('PLANNING');
+            $table->enum('status', ['pending', 'in_progress', 'completed', 'cancelled'])->default('pending');
+            $table->decimal('direct_cost', 12, 2)->default(0);
+            $table->decimal('vat_cost', 12, 2)->default(0);
+            $table->decimal('total_cost', 12, 2)->default(0);
+            $table->json('client_attachments')->nullable();
+            $table->text('remarks')->nullable();
             $table->timestamps();
         });
     }

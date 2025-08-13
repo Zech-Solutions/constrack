@@ -40,7 +40,7 @@ class ProductResource extends Resource
                 Section::make('Basic Information')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('name')
+                        TextInput::make('title')
                             ->label('Product Name')
                             ->required()
                             ->maxLength(255),

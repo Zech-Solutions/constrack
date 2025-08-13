@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\QuotationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -30,7 +31,7 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->text('completion')->nullable();
             $table->string('filename')->nullable();
-            $table->enum('status', ['DRAFT', 'PENDING', 'APPROVED', 'DECLINED'])->default('DRAFT');
+            $table->enum('status', array_column(QuotationStatus::cases(), 'value'))->default('draft');
             $table->timestamps();
         });
     }

@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Enums\QuotationStatus;
 use App\Enums\WorkType;
-use App\Filament\Clusters\ProjectManagementCluster;
 use App\Filament\Resources\QuotationResource\Pages;
 use App\Models\Quotation;
 use App\Models\Work;
@@ -29,7 +28,7 @@ class QuotationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static ?string $cluster = ProjectManagementCluster::class;
+    protected static ?string $navigationGroup = 'Transaction';
 
     public static function form(Form $form): Form
     {
@@ -205,8 +204,7 @@ class QuotationResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => $record->status === QuotationStatus::DRAFT),
+                // Tables\Actions\EditAction::make()->visible(fn ($record) => $record->status === QuotationStatus::Draft),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-s-cloud-arrow-down')
                     ->visible(fn (Quotation $record): bool => ! is_null($record->filename))
