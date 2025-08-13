@@ -16,6 +16,7 @@ use Filament\Resources\Pages\ViewRecord;
 class ViewQuotation extends ViewRecord
 {
     protected static string $view = 'filament.resources.quotations.pages.view-quotation';
+
     protected static string $resource = QuotationResource::class;
 
     public function getTitle(): string
