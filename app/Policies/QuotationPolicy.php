@@ -29,7 +29,7 @@ class QuotationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(['TENANT_ADMIN']) || $user->can('create quotation');
+        return $user->hasRole(['ADMIN']) || $user->can('create quotation');
     }
 
     /**
@@ -37,7 +37,7 @@ class QuotationPolicy
      */
     public function update(User $user, Quotation $quotation): bool
     {
-        return ($user->hasRole(['TENANT_ADMIN']) || $user->can('update quotation')) && $quotation->status === QuotationStatus::Draft;
+        return ($user->hasRole(['ADMIN']) || $user->can('update quotation')) && $quotation->status === QuotationStatus::Draft;
     }
 
     /**
@@ -70,7 +70,7 @@ class QuotationPolicy
     public function finish(User $user, Quotation $quotation): bool
     {
         // User must have permission & quotation must not be approved yet
-        return ($user->hasRole(['TENANT_ADMIN']) || $user->can('finish quotations')) && $quotation->status === QuotationStatus::Draft;
+        return ($user->hasRole(['ADMIN']) || $user->can('finish quotations')) && $quotation->status === QuotationStatus::Draft;
     }
 
     /**
@@ -79,7 +79,7 @@ class QuotationPolicy
     public function approve(User $user, Quotation $quotation): bool
     {
         // User must have permission & quotation must not be approved yet
-        return ($user->hasRole(['TENANT_ADMIN']) || $user->can('approve quotations')) && $quotation->status === QuotationStatus::Pending;
+        return ($user->hasRole(['ADMIN']) || $user->can('approve quotations')) && $quotation->status === QuotationStatus::Pending;
     }
 
     /**
@@ -88,6 +88,6 @@ class QuotationPolicy
     public function accept(User $user, Quotation $quotation): bool
     {
         // User must have permission & quotation must not be approved yet
-        return ($user->hasRole(['TENANT_ADMIN']) || $user->can('accept quotations')) && $quotation->status === QuotationStatus::Reviewed;
+        return ($user->hasRole(['ADMIN']) || $user->can('accept quotations')) && $quotation->status === QuotationStatus::Reviewed;
     }
 }

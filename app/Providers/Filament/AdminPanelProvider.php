@@ -58,13 +58,14 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->tenant(Tenant::class)
+            ->tenant(Tenant::class, slugAttribute: 'slug')
+            ->tenantDomain('{tenant:slug}.constrack.local')
             ->tenantMiddleware([
                 \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
-                'role:TENANT_ADMIN|USER',
+                'role:ADMIN|USER',
             ])->plugin(
                 \Hasnayeen\Themes\ThemesPlugin::make()
             );

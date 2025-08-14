@@ -49,12 +49,18 @@ class UserResource extends Resource
                     ->password()
                     ->maxLength(255)
                     ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                    ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $context) => $context === 'create')
                     ->label('Password'),
                 Select::make('roles')
                     ->label('Roles')
                     ->relationship('roles', 'name')
-                    ->options(Role::where('name', '!=', 'SUPERADMIN')->pluck('name', 'name'))
+                    ->options(Role::where('name', '!=', 'SUPERADMIN')->pluck('name', 'id'))
+                    ->preload()
+                    ->required(),
+                Select::make('permissions')
+                    ->label('Permissions')
+                    ->relationship('permissions', 'name')
                     ->multiple()
                     ->preload()
                     ->required(),

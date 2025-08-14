@@ -13,7 +13,7 @@ class RolesAndSuperadminSeeder extends Seeder
     public function run(): void
     {
         Role::firstOrCreate(['name' => 'SUPERADMIN', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'TENANT_ADMIN', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'ADMIN', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'USER', 'guard_name' => 'web']);
     }
 }
